@@ -6,22 +6,16 @@ A framework-agnostic JavaScript client for the Pi-hole v6 API.
 ![GitHub Pull Requests](https://img.shields.io/github/issues-pr/creeperkatze/pihole-js?labelColor=0d143c)
 ![GitHub Repo stars](https://img.shields.io/github/stars/creeperkatze/pihole-js?style=flat&labelColor=0d143c)
 
-- Zero runtime dependencies
-- Node.js 18+
-- Built-in session authentication
-- Works with password-protected and passwordless Pi-hole installs
-
-## Installation
+## 📦 Installation
 
 ```sh
 npm install pihole-js
-```
-
-```sh
 pnpm add pihole-js
+yarn add pihole-js
+bun add pihole-js
 ```
 
-## Quick Start
+## 🚀 Usage
 
 ```ts
 import PiHoleClient from 'pihole-js';
@@ -40,7 +34,7 @@ console.log(blocking);
 ```
 
 
-## API
+## 📖 API
 
 ### `new PiHoleClient(options)`
 
@@ -106,7 +100,7 @@ System:
 - `client.getSearch(domain, options?)`
 - `client.getPadd()`
 
-## Authentication
+## 🔐 Authentication
 
 If you provide a `password`, the client will authenticate automatically and reuse the returned Pi-hole session.
 
@@ -127,7 +121,7 @@ const client = new PiHoleClient({
 });
 ```
 
-## Session Stores
+## 🗂️ Session Stores
 
 By default, each client instance keeps session data in memory.
 
@@ -145,7 +139,7 @@ const client = new PiHoleClient({
 
 If you want to share sessions across client instances, provide your own store implementation that matches the `SessionStore` interface.
 
-## Custom Fetch
+## 🌐 Custom Fetch
 
 You can inject your own `fetch` implementation.
 
@@ -160,7 +154,7 @@ const client = new PiHoleClient({
 });
 ```
 
-## Error Handling
+## ⚠️ Error Handling
 
 All request, authentication, timeout, and API errors are thrown as `PiHoleError`.
 
@@ -183,7 +177,7 @@ try {
 }
 ```
 
-## Development
+## 👨‍💻 Development
 
 ```sh
 pnpm test
@@ -195,6 +189,6 @@ if (error instanceof PiHoleError) {
 }
 ```
 
-## License
+## 📜 License
 
 AGPL-3.0-only
