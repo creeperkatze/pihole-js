@@ -39,13 +39,6 @@ console.log(summary);
 console.log(blocking);
 ```
 
-## Why This Client
-
-- Session handling is built in, including automatic session reuse
-- Errors are normalized into `PiHoleError`
-- `fetch` is injectable for custom runtimes and testing
-- Session storage is pluggable
-- The API is exposed as one client instance instead of nested service objects
 
 ## API
 
