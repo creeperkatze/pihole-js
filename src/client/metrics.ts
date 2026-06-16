@@ -1,4 +1,4 @@
-import { AuthClient } from './auth-client.js';
+import { AuthClient } from './auth.js';
 import type {
   BlockingStatus,
   ClientHistoryResponse,

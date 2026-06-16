@@ -1,4 +1,4 @@
-import { MetricsClient } from './metrics-client.js';
+import { MetricsClient } from './metrics.js';
 import type {
   ClientMutationPayload,
   ClientReplacePayload,

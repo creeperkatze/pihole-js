@@ -1,4 +1,4 @@
-import { ManagementClient } from './management-client.js';
+import { ManagementClient } from './management.js';
 import type {
   ConfigMutationOptions,
   ConfigQueryOptions,

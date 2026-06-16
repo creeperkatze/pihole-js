@@ -1,4 +1,4 @@
-import { PiHoleClientCore } from '../core/index.js';
+import { PiHoleClientCore } from './core.js';
 import type {
   AppPasswordResponse,
   AuthRequest,
