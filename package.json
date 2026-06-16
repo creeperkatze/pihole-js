@@ -1,0 +1,44 @@
+{
+  "name": "pihole-js",
+  "version": "1.0.0",
+  "description": "Framework-agnostic JavaScript API client for Pi-hole v6",
+  "type": "module",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "default": "./dist/index.js"
+    }
+  },
+  "files": [
+    "dist/"
+  ],
+  "scripts": {
+    "build": "tsc",
+    "test": "node --import tsx/esm --test src/client.test.ts",
+    "release:patch": "pnpm version patch && git push && git push --tags",
+    "release:minor": "pnpm version minor && git push && git push --tags",
+    "release:major": "pnpm version major && git push && git push --tags"
+  },
+  "keywords": [
+    "pihole",
+    "pi-hole",
+    "dns",
+    "adblock",
+    "api"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/creeperkatze/pihole-js"
+  },
+  "author": "Creeperkatze",
+  "license": "AGPL-3.0-only",
+  "packageManager": "pnpm@11.7.0",
+  "engines": {
+    "node": ">=18"
+  },
+  "devDependencies": {
+    "@types/node": "^25.9.3",
+    "tsx": "^4.20.6",
+    "typescript": "^5.9.3"
+  }
+}
