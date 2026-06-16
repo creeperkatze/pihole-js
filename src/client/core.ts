@@ -1,4 +1,4 @@
-import { PiHoleError } from '../errors.js';
+import { PiHoleError } from '../error.js';
 import { MemorySessionStore } from '../session/index.js';
 import {
   buildApiUrl,
