@@ -1,20 +1,27 @@
 # pihole-js
+A framework-agnostic JavaScript client for the Pi-hole v6 API.
 
-A framework-agnostic JavaScript API client for the Pi-hole v6 API. Zero runtime dependencies, requires Node.js 18+.
+![GitHub Branch Check Runs](https://img.shields.io/github/check-runs/creeperkatze/pihole-js/main?labelColor=0d143c)
+![GitHub Issues](https://img.shields.io/github/issues/creeperkatze/pihole-js?labelColor=0d143c)
+![GitHub Pull Requests](https://img.shields.io/github/issues-pr/creeperkatze/pihole-js?labelColor=0d143c)
+![GitHub Repo stars](https://img.shields.io/github/stars/creeperkatze/pihole-js?style=flat&labelColor=0d143c)
 
-![GitHub Branch Check Runs](https://img.shields.io/github/check-runs/creeperkatze/tankerkoenig-js/main?labelColor=0d143c)
-![GitHub Issues](https://img.shields.io/github/issues/creeperkatze/tankerkoenig-js?labelColor=0d143c)
-![GitHub Pull Requests](https://img.shields.io/github/issues-pr/creeperkatze/tankerkoenig-js?labelColor=0d143c)
-![GitHub Repo stars](https://img.shields.io/github/stars/creeperkatze/tankerkoenig-js?style=flat&labelColor=0d143c)
+- Zero runtime dependencies
+- Node.js 18+
+- Built-in session authentication
+- Works with password-protected and passwordless Pi-hole installs
 
 ## Installation
 
 ```sh
 npm install pihole-js
+```
+
+```sh
 pnpm add pihole-js
 ```
 
-## Usage
+## Quick Start
 
 ```ts
 import PiHoleClient from 'pihole-js';
@@ -22,21 +29,23 @@ import PiHoleClient from 'pihole-js';
 const client = new PiHoleClient({
   baseUrl: 'http://pi.hole',
   password: 'your-api-password',
-  userAgent: 'pihole-dashboard/1.0',
+  userAgent: 'my-app/1.0',
 });
 
-const stats = await client.getStatsSummary();
+const summary = await client.getStatsSummary();
 const blocking = await client.getBlocking();
+
+console.log(summary);
+console.log(blocking);
 ```
 
-## Features
+## Why This Client
 
-- Built-in session authentication for password-protected and passwordless installs
-- Configurable request timeout
-- Configurable `User-Agent` header
-- Pluggable `fetch` implementation
-- Pluggable session store for persisting session IDs across client instances
-- First-class methods covering the Pi-hole v6 endpoints shipped in [`/spec`](./spec)
+- Session handling is built in, including automatic session reuse
+- Errors are normalized into `PiHoleError`
+- `fetch` is injectable for custom runtimes and testing
+- Session storage is pluggable
+- The API is exposed as one client instance instead of nested service objects
 
 ## API
 
@@ -51,44 +60,143 @@ const client = new PiHoleClient({
 });
 ```
 
-### Selected endpoint methods
+### Options
 
-- `client.checkAuth()`, `client.login()`, `client.logout()`
-- `client.getStatsSummary()`, `client.getBlocking()`, `client.getQueries()`, `client.getHistory()`
-- `client.getDomains()`, `client.createDomain()`, `client.replaceDomain()`, `client.deleteDomain()`
-- `client.getGroups()`, `client.getClients()`, `client.getLists()`
-- `client.getConfig()`, `client.patchConfig()`
-- `client.getNetworkDevices()`, `client.getNetworkGateway()`
-- `client.exportTeleporter()`, `client.importTeleporter()`
-- `client.runGravity()`, `client.restartDns()`, `client.flushLogs()`
-- `client.getDhcpLeases()`, `client.getSearch()`, `client.getPadd()`
+```ts
+interface PiHoleClientOptions {
+  baseUrl: string;
+  password?: string;
+  timeoutMs?: number;
+  userAgent?: string;
+  fetch?: typeof globalThis.fetch;
+  sessionStore?: SessionStore;
+}
+```
 
-## Session stores
+### Selected Methods
 
-By default, each client instance keeps session data in memory. To share sessions across clients, provide a custom store:
+Authentication:
+- `client.checkAuth()`
+- `client.login(credentials?)`
+- `client.logout()`
+- `client.getSessions()`
+
+Metrics:
+- `client.getStatsSummary()`
+- `client.getStatsTopDomains()`
+- `client.getStatsTopClients()`
+- `client.getQueries()`
+- `client.getHistory()`
+- `client.getBlocking()`
+- `client.updateBlocking(blocking, timer?)`
+
+Management:
+- `client.getDomains()`
+- `client.createDomain(type, kind, payload)`
+- `client.replaceDomain(type, kind, domain, payload)`
+- `client.deleteDomain(type, kind, domain)`
+- `client.getGroups()`
+- `client.getClients()`
+- `client.getLists()`
+
+System:
+- `client.getConfig()`
+- `client.patchConfig(config, options?)`
+- `client.getNetworkDevices(options?)`
+- `client.getNetworkGateway(options?)`
+- `client.exportTeleporter()`
+- `client.importTeleporter(archive, selection?)`
+- `client.runGravity(options?)`
+- `client.restartDns()`
+- `client.flushLogs()`
+- `client.getDhcpLeases()`
+- `client.getSearch(domain, options?)`
+- `client.getPadd()`
+
+## Authentication
+
+If you provide a `password`, the client will authenticate automatically and reuse the returned Pi-hole session.
+
+```ts
+const client = new PiHoleClient({
+  baseUrl: 'http://pi.hole',
+  password: 'secret',
+});
+
+await client.getStatsSummary();
+```
+
+For passwordless installs, omit the password:
+
+```ts
+const client = new PiHoleClient({
+  baseUrl: 'http://pi.hole',
+});
+```
+
+## Session Stores
+
+By default, each client instance keeps session data in memory.
 
 ```ts
 import PiHoleClient, { MemorySessionStore } from 'pihole-js';
 
-const store = new MemorySessionStore();
+const sessionStore = new MemorySessionStore();
+
 const client = new PiHoleClient({
   baseUrl: 'http://pi.hole',
   password: 'secret',
-  sessionStore: store,
+  sessionStore,
 });
 ```
 
-## Error handling
+If you want to share sessions across client instances, provide your own store implementation that matches the `SessionStore` interface.
 
-All API methods throw `PiHoleError` on HTTP errors, API errors, authentication failures, and timeouts.
+## Custom Fetch
+
+You can inject your own `fetch` implementation.
+
+```ts
+import PiHoleClient from 'pihole-js';
+import fetch from 'node-fetch';
+
+const client = new PiHoleClient({
+  baseUrl: 'http://pi.hole',
+  password: 'secret',
+  fetch,
+});
+```
+
+## Error Handling
+
+All request, authentication, timeout, and API errors are thrown as `PiHoleError`.
 
 ```ts
 import PiHoleClient, { PiHoleError } from 'pihole-js';
+
+const client = new PiHoleClient({
+  baseUrl: 'http://pi.hole',
+  password: 'secret',
+});
 
 try {
   await client.getStatsSummary();
 } catch (error) {
   if (error instanceof PiHoleError) {
+    console.error(error.status);
+    console.error(error.code);
+    console.error(error.message);
+  }
+}
+```
+
+## Development
+
+```sh
+pnpm test
+pnpm test:coverage
+pnpm build
+if (error instanceof PiHoleError) {
     console.error(error.status, error.message);
   }
 }
