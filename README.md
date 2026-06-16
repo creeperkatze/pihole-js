@@ -28,6 +28,7 @@ const summary = await client.getSummary();
 - Configurable request timeout
 - Pluggable `fetch` implementation
 - Pluggable session store for persisting session IDs across client instances
+- First-class methods covering the Pi-hole v6 endpoints shipped in [`/spec`](./spec)
 - Typed helpers for common Pi-hole actions used by browser extensions and apps
 
 ## API
@@ -46,25 +47,25 @@ const client = new PiHoleClient({
 
 Returns a combined summary containing stats, blocking state, history, groups, lists, and diagnostics where available.
 
-### `client.searchDomain(domain)`
+### Selected endpoint methods
 
-Searches domain state and gravity matches.
+- `client.checkAuth()`, `client.login()`, `client.logout()`
+- `client.getStatsSummary()`, `client.getQueries()`, `client.getHistory()`
+- `client.getDomains()`, `client.createDomain()`, `client.replaceDomain()`, `client.deleteDomain()`
+- `client.getGroups()`, `client.getClients()`, `client.getLists()`
+- `client.getConfig()`, `client.patchConfig()`
+- `client.getNetworkDevices()`, `client.getNetworkGateway()`
+- `client.exportTeleporter()`, `client.importTeleporter()`
+- `client.runGravity()`, `client.restartDns()`, `client.flushLogs()`
+- `client.getDhcpLeases()`, `client.getSearch()`, `client.getPadd()`
 
-### `client.blockDomain(domain)` / `client.allowlistDomain(domain)`
+### Convenience helpers
 
-Adds a regex blocklist or allowlist entry for a domain.
-
-### `client.deleteDomainEntry(type, kind, domain)`
-
-Deletes a specific domain entry.
-
-### `client.setBlocking(enabled, seconds?)`
-
-Enables or disables blocking. When `seconds` is provided while disabling, Pi-hole will re-enable automatically after that duration.
-
-### `client.setGroupEnabled(group, enabled)` / `client.setListEnabled(list, enabled)`
-
-Updates group or adlist state.
+- `client.searchDomain(domain)`
+- `client.blockDomain(domain)` / `client.allowlistDomain(domain)`
+- `client.deleteDomainEntry(type, kind, domain)`
+- `client.setBlocking(enabled, seconds?)`
+- `client.setGroupEnabled(group, enabled)` / `client.setListEnabled(list, enabled)`
 
 ## Session stores
 
