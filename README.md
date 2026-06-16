@@ -2,6 +2,11 @@
 
 A framework-agnostic JavaScript API client for the Pi-hole v6 API. Zero runtime dependencies, requires Node.js 18+.
 
+![GitHub Branch Check Runs](https://img.shields.io/github/check-runs/creeperkatze/tankerkoenig-js/main?labelColor=0d143c)
+![GitHub Issues](https://img.shields.io/github/issues/creeperkatze/tankerkoenig-js?labelColor=0d143c)
+![GitHub Pull Requests](https://img.shields.io/github/issues-pr/creeperkatze/tankerkoenig-js?labelColor=0d143c)
+![GitHub Repo stars](https://img.shields.io/github/stars/creeperkatze/tankerkoenig-js?style=flat&labelColor=0d143c)
+
 ## Installation
 
 ```sh
