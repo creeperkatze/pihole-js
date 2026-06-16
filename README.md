@@ -19,7 +19,8 @@ const client = new PiHoleClient({
   password: 'your-api-password',
 });
 
-const summary = await client.getSummary();
+const stats = await client.getStatsSummary();
+const blocking = await client.getBlocking();
 ```
 
 ## Features
@@ -29,7 +30,6 @@ const summary = await client.getSummary();
 - Pluggable `fetch` implementation
 - Pluggable session store for persisting session IDs across client instances
 - First-class methods covering the Pi-hole v6 endpoints shipped in [`/spec`](./spec)
-- Typed helpers for common Pi-hole actions used by browser extensions and apps
 
 ## API
 
@@ -43,14 +43,10 @@ const client = new PiHoleClient({
 });
 ```
 
-### `client.getSummary()`
-
-Returns a combined summary containing stats, blocking state, history, groups, lists, and diagnostics where available.
-
 ### Selected endpoint methods
 
 - `client.checkAuth()`, `client.login()`, `client.logout()`
-- `client.getStatsSummary()`, `client.getQueries()`, `client.getHistory()`
+- `client.getStatsSummary()`, `client.getBlocking()`, `client.getQueries()`, `client.getHistory()`
 - `client.getDomains()`, `client.createDomain()`, `client.replaceDomain()`, `client.deleteDomain()`
 - `client.getGroups()`, `client.getClients()`, `client.getLists()`
 - `client.getConfig()`, `client.patchConfig()`
@@ -58,14 +54,6 @@ Returns a combined summary containing stats, blocking state, history, groups, li
 - `client.exportTeleporter()`, `client.importTeleporter()`
 - `client.runGravity()`, `client.restartDns()`, `client.flushLogs()`
 - `client.getDhcpLeases()`, `client.getSearch()`, `client.getPadd()`
-
-### Convenience helpers
-
-- `client.searchDomain(domain)`
-- `client.blockDomain(domain)` / `client.allowlistDomain(domain)`
-- `client.deleteDomainEntry(type, kind, domain)`
-- `client.setBlocking(enabled, seconds?)`
-- `client.setGroupEnabled(group, enabled)` / `client.setListEnabled(list, enabled)`
 
 ## Session stores
 
@@ -90,7 +78,7 @@ All API methods throw `PiHoleError` on HTTP errors, API errors, authentication f
 import PiHoleClient, { PiHoleError } from 'pihole-js';
 
 try {
-  await client.getSummary();
+  await client.getStatsSummary();
 } catch (error) {
   if (error instanceof PiHoleError) {
     console.error(error.status, error.message);
