@@ -22,6 +22,7 @@ import PiHoleClient from 'pihole-js';
 const client = new PiHoleClient({
   baseUrl: 'http://pi.hole',
   password: 'your-api-password',
+  userAgent: 'pihole-dashboard/1.0',
 });
 
 const stats = await client.getStatsSummary();
@@ -32,6 +33,7 @@ const blocking = await client.getBlocking();
 
 - Built-in session authentication for password-protected and passwordless installs
 - Configurable request timeout
+- Configurable `User-Agent` header
 - Pluggable `fetch` implementation
 - Pluggable session store for persisting session IDs across client instances
 - First-class methods covering the Pi-hole v6 endpoints shipped in [`/spec`](./spec)
@@ -45,6 +47,7 @@ const client = new PiHoleClient({
   baseUrl: 'http://pi.hole',
   password: 'secret',
   timeoutMs: 10_000,
+  userAgent: 'my-app/1.0',
 });
 ```
 

@@ -230,6 +230,7 @@ test('requestJson appends query params and JSON-encodes object bodies', async ()
   const fetch = createMockFetch(jsonResponse({ status: 'ok' }));
   const client = new TestClient({
     baseUrl: 'http://pi.hole',
+    userAgent: 'pihole-js-tests/1.0',
     fetch,
   });
 
@@ -243,6 +244,25 @@ test('requestJson appends query params and JSON-encodes object bodies', async ()
   assert.equal(String(fetch.calls[0].input), 'http://pi.hole/api/groups?type=allow&ids=1&ids=2');
   assert.equal(fetch.calls[0].init?.body, JSON.stringify({ enabled: true }));
   assert.equal((fetch.calls[0].init?.headers as Headers).get('Content-Type'), 'application/json');
+  assert.equal((fetch.calls[0].init?.headers as Headers).get('User-Agent'), 'pihole-js-tests/1.0');
+});
+
+test('requestJson forces the configured user agent over per-request headers', async () => {
+  const fetch = createMockFetch(jsonResponse({ status: 'ok' }));
+  const client = new TestClient({
+    baseUrl: 'http://pi.hole',
+    userAgent: 'pihole-js-tests/1.0',
+    fetch,
+  });
+
+  await client.json('groups', {
+    auth: 'none',
+    headers: {
+      'User-Agent': 'custom-agent/2.0',
+    },
+  });
+
+  assert.equal((fetch.calls[0].init?.headers as Headers).get('User-Agent'), 'pihole-js-tests/1.0');
 });
 
 test('logout clears the cached session entry', async () => {

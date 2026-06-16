@@ -29,17 +29,22 @@ export abstract class PiHoleClientCore {
   readonly #baseUrl: string;
   readonly #password: string;
   readonly #timeoutMs: number;
+  readonly #userAgent: string | null;
   readonly #fetch: typeof globalThis.fetch;
   readonly #sessionStore: SessionStore;
 
-  protected constructor({ baseUrl, password = '', timeoutMs = 10_000, fetch: fetchImpl, sessionStore }: PiHoleClientOptions) {
+  protected constructor({ baseUrl, password = '', timeoutMs = 10_000, userAgent, fetch: fetchImpl, sessionStore }: PiHoleClientOptions) {
     if (typeof timeoutMs !== 'number' || !Number.isFinite(timeoutMs) || timeoutMs <= 0) {
       throw new TypeError('timeoutMs must be a positive finite number');
+    }
+    if (userAgent != null && typeof userAgent !== 'string') {
+      throw new TypeError('userAgent must be a string');
     }
 
     this.#baseUrl = normalizeBaseUrl(baseUrl);
     this.#password = password;
     this.#timeoutMs = timeoutMs;
+    this.#userAgent = userAgent ?? null;
     this.#fetch = fetchImpl ?? globalThis.fetch;
     this.#sessionStore = sessionStore ?? new MemorySessionStore();
 
@@ -111,6 +116,10 @@ export abstract class PiHoleClientCore {
     const controller = new AbortController();
     const timeoutId = setTimeout(() => controller.abort(), this.#timeoutMs);
     const headers = new Headers(init.headers);
+
+    if (this.#userAgent) {
+      headers.set('User-Agent', this.#userAgent);
+    }
 
     if (sid) {
       headers.set('sid', sid);

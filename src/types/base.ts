@@ -19,6 +19,7 @@ export interface PiHoleClientOptions {
   baseUrl: string;
   password?: string;
   timeoutMs?: number;
+  userAgent?: string;
   fetch?: typeof globalThis.fetch;
   sessionStore?: SessionStore;
 }
