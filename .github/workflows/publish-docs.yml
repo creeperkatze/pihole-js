@@ -55,5 +55,5 @@ jobs:
                   push: true
                   tags: ${{ steps.docker_meta.outputs.tags }}
                   labels: ${{ steps.docker_meta.outputs.labels }}
-                  cache-from: type=registry,ref=ghcr.io/creeperkatze/pihole-js-docs:main
+                  cache-from: type=registry,ref=ghcr.io/creeperkatze/pihole-js:main
                   cache-to: type=inline
