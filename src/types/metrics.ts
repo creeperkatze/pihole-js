@@ -1,5 +1,6 @@
 import type { ApiResponseBase, JsonValue } from './base.js';
 
+/** A single data point in the query history time series. */
 export interface HistoryPoint {
   timestamp: number;
   total: number;
@@ -8,6 +9,7 @@ export interface HistoryPoint {
   forwarded: number;
 }
 
+/** Current stats snapshot including query counts and client activity. */
 export interface SummaryStatsResponse extends ApiResponseBase {
   queries: {
     total: number;
@@ -31,6 +33,7 @@ export interface SummaryStatsResponse extends ApiResponseBase {
   };
 }
 
+/** Aggregated stats from the long-term query database for a time range. */
 export interface DatabaseSummaryResponse extends ApiResponseBase {
   sum_queries: number;
   sum_blocked: number;
@@ -38,6 +41,7 @@ export interface DatabaseSummaryResponse extends ApiResponseBase {
   total_clients: number;
 }
 
+/** Usage stats for a single upstream DNS resolver. */
 export interface UpstreamMetric {
   ip: string | null;
   name: string | null;
@@ -49,77 +53,92 @@ export interface UpstreamMetric {
   };
 }
 
+/** Stats for all upstream resolvers. */
 export interface UpstreamsResponse extends ApiResponseBase {
   upstreams: UpstreamMetric[];
   forwarded_queries: number;
   total_queries: number;
 }
 
+/** A domain paired with its query count. */
 export interface CountedDomain {
   domain: string;
   count: number;
 }
 
+/** Top queried or blocked domains. */
 export interface TopDomainsResponse extends ApiResponseBase {
   domains: CountedDomain[];
   total_queries: number;
   blocked_queries: number;
 }
 
+/** A client paired with its query count. */
 export interface CountedClient {
   ip: string;
   name: string | null;
   count: number;
 }
 
+/** Top clients by query volume. */
 export interface TopClientsResponse extends ApiResponseBase {
   clients: CountedClient[];
   total_queries: number;
   blocked_queries: number;
 }
 
+/** Query count breakdown by DNS record type. */
 export interface QueryTypesResponse extends ApiResponseBase {
   types: Record<string, number>;
 }
 
+/** List of recently blocked domains. */
 export interface RecentBlockedResponse extends ApiResponseBase {
   blocked: string[];
 }
 
+/** Time series of query counts. */
 export interface HistoryResponse extends ApiResponseBase {
   history: HistoryPoint[];
 }
 
+/** Summary info for a client within a history response. */
 export interface ClientHistorySummary {
   name: string | null;
   total: number;
 }
 
+/** Per-client query counts for a single time bucket. */
 export interface ClientHistoryBucket {
   timestamp: number;
   data: Record<string, number>;
 }
 
+/** Per-client query history over time. */
 export interface ClientHistoryResponse extends ApiResponseBase {
   clients: Record<string, ClientHistorySummary>;
   history: ClientHistoryBucket[];
 }
 
+/** DNS reply type and response time for a query. */
 export interface QueryReply {
   type: string | null;
   time: number;
 }
 
+/** IP and hostname of a DNS client. */
 export interface QueryClient {
   ip: string;
   name: string | null;
 }
 
+/** Extended DNS Error attached to a query. */
 export interface QueryEde {
   code: number;
   text: string | null;
 }
 
+/** A single entry from the DNS query log. */
 export interface QueryLogEntry {
   id: number;
   time: number;
@@ -135,6 +154,7 @@ export interface QueryLogEntry {
   ede?: QueryEde;
 }
 
+/** Paginated DNS query log. */
 export interface QueriesResponse extends ApiResponseBase {
   queries: QueryLogEntry[];
   cursor: number;
@@ -145,10 +165,12 @@ export interface QueriesResponse extends ApiResponseBase {
   earliest_timestamp_disk?: number;
 }
 
+/** Autocomplete suggestions for query log filters. */
 export interface QuerySuggestionsResponse extends ApiResponseBase {
   suggestions: Record<string, string[]>;
 }
 
+/** Summary metrics for the PADD dashboard. */
 export interface PaddResponse extends ApiResponseBase {
   '%cpu'?: number;
   '%mem'?: number;

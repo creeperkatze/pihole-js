@@ -6,6 +6,7 @@ import type {
 } from '../types/index.js';
 import { encodeSegment } from '../utils/domain.js';
 
+/** Manages Pi-hole groups used to organize clients and lists. */
 export class GroupsApi {
   constructor(private readonly core: PiHoleClientCore) {}
 
@@ -35,6 +36,7 @@ export class GroupsApi {
     await this.core.requestVoid(`groups/${encodeSegment(name)}`, { method: 'DELETE' });
   }
 
+  /** Deletes multiple groups in one request. */
   async batchDelete(items: Array<{ item: string }>): Promise<void> {
     await this.core.requestVoid('groups:batchDelete', {
       method: 'POST',

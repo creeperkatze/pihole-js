@@ -10,5 +10,9 @@
   "excludeExternals": true,
   "hideGenerator": true,
   "githubPages": false,
-  "categorizeByGroup": false
+  "categorizeByGroup": false,
+  "disableSources": true,
+  "hideBreadcrumbs": true,
+  "hidePageHeader": true,
+  "useCodeBlocks": true
 }

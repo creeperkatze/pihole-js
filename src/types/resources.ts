@@ -1,15 +1,22 @@
 import type { ApiResponseBase, ProcessedResponse } from './base.js';
 
+/** Whether a domain is on the allowlist or denylist. */
 export type DomainType = 'allow' | 'deny';
+/** Whether a domain entry is a literal match or a regex pattern. */
 export type DomainKind = 'exact' | 'regex';
+/** Whether a subscription list is an allowlist or a blocklist. */
 export type ListType = 'allow' | 'block';
+/** Current DNS blocking state. */
 export type BlockingState = 'enabled' | 'disabled';
 
+/** Current DNS blocking state and optional timer. */
 export interface BlockingStatus extends ApiResponseBase {
   blocking: BlockingState;
+  /** Seconds remaining until blocking state reverts, or null if no timer is active. */
   timer: number | null;
 }
 
+/** A Pi-hole group entry. */
 export interface PiholeGroup {
   name: string;
   comment: string | null;
@@ -19,6 +26,7 @@ export interface PiholeGroup {
   date_modified: number;
 }
 
+/** A subscription-style block or allow list. */
 export interface PiholeList {
   address: string;
   type: ListType;
@@ -35,6 +43,7 @@ export interface PiholeList {
   status?: number;
 }
 
+/** A DNS client registered in Pi-hole. */
 export interface PiHoleClientEntry {
   client: string;
   name?: string | null;
@@ -45,6 +54,7 @@ export interface PiHoleClientEntry {
   date_modified: number;
 }
 
+/** An individual domain list entry. */
 export interface DomainEntry {
   domain: string;
   unicode?: string;
@@ -58,6 +68,7 @@ export interface DomainEntry {
   date_modified: number;
 }
 
+/** A domain matched via a gravity list during a search. */
 export interface GravitySearchEntry {
   domain: string;
   address: string;
@@ -75,6 +86,7 @@ export interface GravitySearchEntry {
   groups?: number[];
 }
 
+/** Results of a domain search across lists and domains. */
 export interface DomainSearchResult {
   domains: DomainEntry[];
   gravity: GravitySearchEntry[];
@@ -97,6 +109,7 @@ export interface DomainSearchResult {
   };
 }
 
+/** A known client suggested for autocomplete. */
 export interface ClientSuggestion {
   hwaddr: string | null;
   macVendor: string | null;
@@ -129,6 +142,7 @@ export interface SearchResponse extends ApiResponseBase {
   search: DomainSearchResult;
 }
 
+/** Payload for creating one or more domain entries. */
 export interface DomainMutationPayload {
   domain: string | string[];
   comment?: string | null;
@@ -136,6 +150,7 @@ export interface DomainMutationPayload {
   enabled?: boolean;
 }
 
+/** Payload for updating an existing domain entry. */
 export interface DomainUpdatePayload {
   type?: DomainType;
   kind?: DomainKind;
@@ -144,29 +159,34 @@ export interface DomainUpdatePayload {
   enabled?: boolean;
 }
 
+/** Payload for creating one or more groups. */
 export interface GroupMutationPayload {
   name: string | string[];
   comment?: string | null;
   enabled?: boolean;
 }
 
+/** Payload for updating an existing group. */
 export interface GroupUpdatePayload {
   name?: string;
   comment?: string | null;
   enabled?: boolean;
 }
 
+/** Payload for creating one or more client entries. */
 export interface ClientMutationPayload {
   client: string | string[];
   comment?: string | null;
   groups?: number[];
 }
 
+/** Payload for updating a client entry. */
 export interface ClientUpdatePayload {
   comment?: string | null;
   groups?: number[];
 }
 
+/** Payload for creating one or more subscription lists. */
 export interface ListMutationPayload {
   address: string | string[];
   comment?: string | null;
@@ -174,6 +194,7 @@ export interface ListMutationPayload {
   enabled?: boolean;
 }
 
+/** Payload for updating an existing subscription list. */
 export interface ListUpdatePayload {
   type: ListType;
   comment?: string | null;

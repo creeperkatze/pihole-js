@@ -8,6 +8,7 @@ import type {
 } from '../types/index.js';
 import { encodeSegment } from '../utils/domain.js';
 
+/** Manages subscription-style block and allow lists (adlists). */
 export class ListsApi {
   constructor(private readonly core: PiHoleClientCore) {}
 
@@ -42,6 +43,7 @@ export class ListsApi {
     });
   }
 
+  /** Deletes multiple lists in one request. */
   async batchDelete(items: Array<{ item: string; type: ListType }>): Promise<void> {
     await this.core.requestVoid('lists:batchDelete', {
       method: 'POST',

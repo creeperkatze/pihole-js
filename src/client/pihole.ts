@@ -69,6 +69,7 @@ export class PiHoleClient {
     this.padd = new PaddApi(this.core);
   }
 
+  /** Returns all available API endpoints grouped by HTTP method. */
   async getEndpoints(): Promise<EndpointsResponse> {
     return this.core.requestJson<EndpointsResponse>('endpoints');
   }

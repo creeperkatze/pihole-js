@@ -69,6 +69,7 @@ export class PiHoleClientCore {
     await this.request(path, { ...options, parseAs: 'void' });
   }
 
+  /** Authenticates directly with credentials, bypassing the session cache. */
   async loginWithCredentials(credentials: AuthRequest): Promise<AuthResponse> {
     return this.requestJson<AuthResponse>('auth', {
       auth: 'none',
@@ -77,11 +78,13 @@ export class PiHoleClientCore {
     });
   }
 
+  /** Invalidates the current session on the server and removes it from the store. */
   async logoutSession(): Promise<void> {
     await this.requestVoid('auth', { method: 'DELETE' });
     await this.#sessionStore.delete(this.#baseUrl);
   }
 
+  /** Resolves a session ID and retries the callback once if the session has expired. */
   async withSession<T>(fn: (sid: string | null) => Promise<T>): Promise<T> {
     const sid = await this.#getSession();
 

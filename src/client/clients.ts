@@ -7,6 +7,7 @@ import type {
 } from '../types/index.js';
 import { encodeSegment } from '../utils/domain.js';
 
+/** Manages DNS clients registered with Pi-hole. */
 export class ClientsApi {
   constructor(private readonly core: PiHoleClientCore) {}
 
@@ -36,6 +37,7 @@ export class ClientsApi {
     await this.core.requestVoid(`clients/${encodeSegment(client)}`, { method: 'DELETE' });
   }
 
+  /** Deletes multiple clients in one request. */
   async batchDelete(items: Array<{ item: string }>): Promise<void> {
     await this.core.requestVoid('clients:batchDelete', {
       method: 'POST',
@@ -43,6 +45,7 @@ export class ClientsApi {
     });
   }
 
+  /** Returns known clients to assist with autocomplete. */
   async getSuggestions(): Promise<ClientSuggestionsResponse> {
     return this.core.requestJson<ClientSuggestionsResponse>('clients/_suggestions');
   }
