@@ -31,7 +31,7 @@ jobs:
               with:
                   images: ghcr.io/creeperkatze/pihole-js
                   tags: |
-                      type=raw,value=latest,enable={{is_default_branch}}
+                      type=raw,value=latest
                       type=ref,event=branch
                       type=sha
                   labels: |
