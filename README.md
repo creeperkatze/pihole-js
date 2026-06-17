@@ -106,7 +106,13 @@ Domains:
 - `client.domains.update(type, kind, domain, payload)`
 - `client.domains.delete(type, kind, domain)`
 - `client.domains.allow(domain, comment?)`
+- `client.domains.unallow(domain)`
 - `client.domains.deny(domain, comment?)`
+- `client.domains.undeny(domain)`
+- `client.domains.allowRegex(pattern, comment?)`
+- `client.domains.unallowRegex(pattern)`
+- `client.domains.denyRegex(pattern, comment?)`
+- `client.domains.undenyRegex(pattern)`
 - `client.domains.search(domain, options?)`
 
 Groups:

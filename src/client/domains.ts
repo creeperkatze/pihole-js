@@ -82,8 +82,16 @@ export class DomainsApi {
     return this.create('allow', 'regex', { domain: pattern, comment });
   }
 
+  async unallowRegex(pattern: string): Promise<void> {
+    return this.delete('allow', 'regex', pattern);
+  }
+
   async denyRegex(pattern: string, comment?: string): Promise<DomainsResponse> {
     return this.create('deny', 'regex', { domain: pattern, comment });
+  }
+
+  async undenyRegex(pattern: string): Promise<void> {
+    return this.delete('deny', 'regex', pattern);
   }
 
   async search(domain: string, options?: SearchOptions): Promise<SearchResponse> {

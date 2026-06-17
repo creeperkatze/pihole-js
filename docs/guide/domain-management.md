@@ -5,26 +5,31 @@
 ## Allow and deny
 
 ```ts
-// Add to allowlist / denylist
+// Add or remove allow rule
 await client.domains.allow('safe.example.com');
-await client.domains.deny('ads.example.com');
-
-// Remove from allowlist / denylist
 await client.domains.unallow('safe.example.com');
+
+// Add or remove deny rule
+await client.domains.deny('ads.example.com');
 await client.domains.undeny('ads.example.com');
 ```
 
 An optional comment can be added to any entry:
 
 ```ts
-await client.domains.deny('tracker.example.com', 'known tracker');
+await client.domains.deny('tracker.example.com', 'Known tracker');
 ```
 
 ## Regex rules
 
 ```ts
+// Add or remove allow rule for regex
 await client.domains.allowRegex('^safe\\..*\\.com$');
+await client.domains.unallowRegex('^safe\\..*\\.com$');
+
+// Add or remove deny rule for regex
 await client.domains.denyRegex('^ads?\\..*');
+await client.domains.undenyRegex('^ads?\\..*');
 ```
 
 ## Read the lists
@@ -32,6 +37,14 @@ await client.domains.denyRegex('^ads?\\..*');
 ```ts
 const allowlist = await client.domains.getAllowlist();
 const denylist  = await client.domains.getDenylist();
+```
+
+For finer-grained listing:
+
+```ts
+await client.domains.list(); // all entries
+await client.domains.listByType('allow'); // all allow entries
+await client.domains.listByKind('deny', 'regex'); // deny regex only
 ```
 
 ## Search

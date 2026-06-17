@@ -48,7 +48,9 @@ test('convenience helpers map to the correct typed endpoints', async () => {
       new Response(null, { status: 204 }),
       jsonResponse({}),
       jsonResponse({}),
+      new Response(null, { status: 204 }),
       jsonResponse({}),
+      new Response(null, { status: 204 }),
     ],
   });
 
@@ -59,7 +61,9 @@ test('convenience helpers map to the correct typed endpoints', async () => {
   await client.domains.undeny('bad.com');
   await client.domains.getDenylist();
   await client.domains.allowRegex('^example\\.com$');
+  await client.domains.unallowRegex('^example\\.com$');
   await client.domains.denyRegex('^bad\\.com$');
+  await client.domains.undenyRegex('^bad\\.com$');
 
   expect(String(fetch.calls[0].input)).toBe('http://pi.hole/api/domains/allow/exact');
   expect(fetch.calls[0].init?.method).toBe('POST');
@@ -74,7 +78,13 @@ test('convenience helpers map to the correct typed endpoints', async () => {
   expect(String(fetch.calls[5].input)).toBe('http://pi.hole/api/domains/deny/exact');
   expect(fetch.calls[5].init?.method ?? 'GET').toBe('GET');
   expect(String(fetch.calls[6].input)).toBe('http://pi.hole/api/domains/allow/regex');
-  expect(String(fetch.calls[7].input)).toBe('http://pi.hole/api/domains/deny/regex');
+  expect(fetch.calls[6].init?.method).toBe('POST');
+  expect(String(fetch.calls[7].input)).toBe('http://pi.hole/api/domains/allow/regex/%5Eexample%5C.com%24');
+  expect(fetch.calls[7].init?.method).toBe('DELETE');
+  expect(String(fetch.calls[8].input)).toBe('http://pi.hole/api/domains/deny/regex');
+  expect(fetch.calls[8].init?.method).toBe('POST');
+  expect(String(fetch.calls[9].input)).toBe('http://pi.hole/api/domains/deny/regex/%5Ebad%5C.com%24');
+  expect(fetch.calls[9].init?.method).toBe('DELETE');
 });
 
 test('search encodes the domain name in the path and forwards query options', async () => {
