@@ -21,8 +21,8 @@ const client = new PiHoleClient({
 ## Fetch some data
 
 ```ts
-const summary = await client.getStatsSummary();
-const blocking = await client.getBlocking();
+const summary = await client.metrics.getSummary();
+const blocking = await client.dns.getBlocking();
 ```
 
 ## Common options

@@ -1,5 +1,4 @@
 import type { ApiResponseBase, JsonValue } from './base.js';
-import type { BlockingStatus, PiholeGroup, PiholeList } from './resources.js';
 
 export interface HistoryPoint {
   timestamp: number;
@@ -9,15 +8,7 @@ export interface HistoryPoint {
   forwarded: number;
 }
 
-export interface PiholeDiagnosis {
-  cpu: number;
-  memory: number;
-  temperature: number | null;
-  tempUnit: string;
-  uptime: number;
-}
-
-export interface PiholeSummary {
+export interface SummaryStatsResponse extends ApiResponseBase {
   queries: {
     total: number;
     blocked: number;
@@ -26,25 +17,14 @@ export interface PiholeSummary {
     cached: number;
     forwarded: number;
     types: Record<string, number>;
+    frequency?: number;
+    status?: Record<string, number>;
+    replies?: Record<string, number>;
   };
   clients: {
     active: number;
     total: number;
   };
-  blocking: BlockingStatus;
-  history: HistoryPoint[];
-  groups: PiholeGroup[];
-  lists: PiholeList[];
-  diagnosis: PiholeDiagnosis | null;
-}
-
-export interface SummaryStatsResponse extends ApiResponseBase {
-  queries: PiholeSummary['queries'] & {
-    frequency?: number;
-    status?: Record<string, number>;
-    replies?: Record<string, number>;
-  };
-  clients: PiholeSummary['clients'];
   gravity?: {
     domains_being_blocked?: number;
     last_update?: number;

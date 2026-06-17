@@ -1,4 +1,4 @@
-import type { DomainKind, DomainType, ListType } from './resources.js';
+import type { ListType } from './resources.js';
 
 export interface DatabaseQueryOptions {
   from: number;
@@ -58,13 +58,6 @@ export interface NetworkDevicesOptions {
 
 export interface DetailedNetworkOptions {
   detailed?: boolean;
-}
-
-export interface DomainLookupOptions {
-  path?: string;
-  type?: DomainType;
-  kind?: DomainKind;
-  domain?: string;
 }
 
 export interface GravityOptions {

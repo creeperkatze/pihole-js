@@ -1,4 +1,4 @@
-import { AuthClient } from './auth.js';
+import { PiHoleClientCore } from './core.js';
 import type {
   BlockingStatus,
   ClientHistoryResponse,
@@ -6,88 +6,99 @@ import type {
   DatabaseSummaryResponse,
   HistoryClientsOptions,
   HistoryResponse,
-  PiHoleClientOptions,
   QueriesResponse,
   QueryListOptions,
   QuerySuggestionsResponse,
   QueryTypesResponse,
   RecentBlockedResponse,
   SummaryStatsResponse,
+  TopItemsOptions,
   TopClientsResponse,
   TopDomainsResponse,
   UpstreamsResponse,
 } from '../types/index.js';
 
-export class MetricsClient extends AuthClient {
-  constructor(options: PiHoleClientOptions) {
-    super(options);
+export class MetricsApi {
+  constructor(private readonly core: PiHoleClientCore) {}
+
+  async getSummary(): Promise<SummaryStatsResponse> {
+    return this.core.requestJson<SummaryStatsResponse>('stats/summary');
   }
 
-  async getStatsSummary(): Promise<SummaryStatsResponse> {
-    return this.requestJson<SummaryStatsResponse>('stats/summary');
+  async getDatabaseSummary(options: Pick<DatabaseQueryOptions, 'from' | 'until'>): Promise<DatabaseSummaryResponse> {
+    return this.core.requestJson<DatabaseSummaryResponse>('stats/database/summary', { query: options });
   }
 
-  async getStatsDatabaseSummary(options: DatabaseQueryOptions): Promise<DatabaseSummaryResponse> {
-    return this.requestJson<DatabaseSummaryResponse>('stats/database/summary', { query: options });
+  async getUpstreams(): Promise<UpstreamsResponse> {
+    return this.core.requestJson<UpstreamsResponse>('stats/upstreams');
   }
 
-  async getStatsUpstreams(): Promise<UpstreamsResponse> {
-    return this.requestJson<UpstreamsResponse>('stats/upstreams');
+  async getDatabaseUpstreams(options: Pick<DatabaseQueryOptions, 'from' | 'until'>): Promise<UpstreamsResponse> {
+    return this.core.requestJson<UpstreamsResponse>('stats/database/upstreams', { query: options });
   }
 
-  async getStatsDatabaseUpstreams(options: DatabaseQueryOptions): Promise<UpstreamsResponse> {
-    return this.requestJson<UpstreamsResponse>('stats/database/upstreams', { query: options });
+  async getTopDomains(options?: TopItemsOptions): Promise<TopDomainsResponse> {
+    return this.core.requestJson<TopDomainsResponse>('stats/top_domains', { query: options });
   }
 
-  async getStatsTopDomains(options?: DatabaseQueryOptions): Promise<TopDomainsResponse> {
-    const path = options?.from != null && options.until != null ? 'stats/database/top_domains' : 'stats/top_domains';
-    return this.requestJson<TopDomainsResponse>(path, { query: options });
+  async getDatabaseTopDomains(options: DatabaseQueryOptions): Promise<TopDomainsResponse> {
+    return this.core.requestJson<TopDomainsResponse>('stats/database/top_domains', { query: options });
   }
 
-  async getStatsTopClients(options?: DatabaseQueryOptions): Promise<TopClientsResponse> {
-    const path = options?.from != null && options.until != null ? 'stats/database/top_clients' : 'stats/top_clients';
-    return this.requestJson<TopClientsResponse>(path, { query: options });
+  async getTopClients(options?: TopItemsOptions): Promise<TopClientsResponse> {
+    return this.core.requestJson<TopClientsResponse>('stats/top_clients', { query: options });
   }
 
-  async getStatsQueryTypes(options?: Pick<DatabaseQueryOptions, 'from' | 'until'>): Promise<QueryTypesResponse> {
-    const path = options?.from != null && options.until != null ? 'stats/database/query_types' : 'stats/query_types';
-    return this.requestJson<QueryTypesResponse>(path, { query: options });
+  async getDatabaseTopClients(options: DatabaseQueryOptions): Promise<TopClientsResponse> {
+    return this.core.requestJson<TopClientsResponse>('stats/database/top_clients', { query: options });
   }
 
-  async getStatsRecentBlocked(count?: number): Promise<RecentBlockedResponse> {
-    return this.requestJson<RecentBlockedResponse>('stats/recent_blocked', { query: { count } });
+  async getQueryTypes(): Promise<QueryTypesResponse> {
+    return this.core.requestJson<QueryTypesResponse>('stats/query_types');
+  }
+
+  async getDatabaseQueryTypes(options: Pick<DatabaseQueryOptions, 'from' | 'until'>): Promise<QueryTypesResponse> {
+    return this.core.requestJson<QueryTypesResponse>('stats/database/query_types', { query: options });
+  }
+
+  async getRecentBlocked(count?: number): Promise<RecentBlockedResponse> {
+    return this.core.requestJson<RecentBlockedResponse>('stats/recent_blocked', { query: { count } });
   }
 
   async getHistory(): Promise<HistoryResponse> {
-    return this.requestJson<HistoryResponse>('history');
+    return this.core.requestJson<HistoryResponse>('history');
   }
 
   async getHistoryClients(options?: HistoryClientsOptions): Promise<ClientHistoryResponse> {
-    return this.requestJson<ClientHistoryResponse>('history/clients', { query: options });
+    return this.core.requestJson<ClientHistoryResponse>('history/clients', { query: options });
   }
 
   async getHistoryDatabase(options: Pick<DatabaseQueryOptions, 'from' | 'until'>): Promise<HistoryResponse> {
-    return this.requestJson<HistoryResponse>('history/database', { query: options });
+    return this.core.requestJson<HistoryResponse>('history/database', { query: options });
   }
 
   async getHistoryDatabaseClients(options: Pick<DatabaseQueryOptions, 'from' | 'until'>): Promise<ClientHistoryResponse> {
-    return this.requestJson<ClientHistoryResponse>('history/database/clients', { query: options });
+    return this.core.requestJson<ClientHistoryResponse>('history/database/clients', { query: options });
   }
 
   async getQueries(options?: QueryListOptions): Promise<QueriesResponse> {
-    return this.requestJson<QueriesResponse>('queries', { query: options });
+    return this.core.requestJson<QueriesResponse>('queries', { query: options });
   }
 
   async getQuerySuggestions(): Promise<QuerySuggestionsResponse> {
-    return this.requestJson<QuerySuggestionsResponse>('queries/suggestions');
+    return this.core.requestJson<QuerySuggestionsResponse>('queries/suggestions');
   }
+}
+
+export class DnsApi {
+  constructor(private readonly core: PiHoleClientCore) {}
 
   async getBlocking(): Promise<BlockingStatus> {
-    return this.requestJson<BlockingStatus>('dns/blocking');
+    return this.core.requestJson<BlockingStatus>('dns/blocking');
   }
 
-  async updateBlocking(blocking: boolean, timer?: number | null): Promise<BlockingStatus> {
-    return this.requestJson<BlockingStatus>('dns/blocking', {
+  async setBlocking(blocking: boolean, timer?: number | null): Promise<BlockingStatus> {
+    return this.core.requestJson<BlockingStatus>('dns/blocking', {
       method: 'POST',
       body: {
         blocking,

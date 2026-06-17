@@ -1,11 +1,10 @@
-import { MetricsClient } from './metrics.js';
+import { PiHoleClientCore } from './core.js';
 import type {
   ClientMutationPayload,
   ClientReplacePayload,
   ClientSuggestionsResponse,
   ClientsResponse,
   DomainKind,
-  DomainLookupOptions,
   DomainMutationPayload,
   DomainReplacePayload,
   DomainType,
@@ -18,136 +17,168 @@ import type {
   ListReplacePayload,
   ListsResponse,
   ListType,
-  PiHoleClientOptions,
 } from '../types/index.js';
-import { domainsPath, encodeSegment } from '../utils/domain.js';
+import { encodeSegment } from '../utils/domain.js';
 
-export class ManagementClient extends MetricsClient {
-  constructor(options: PiHoleClientOptions) {
-    super(options);
+export class DomainsApi {
+  constructor(private readonly core: PiHoleClientCore) {}
+
+  async list(): Promise<DomainsResponse> {
+    return this.core.requestJson<DomainsResponse>('domains');
   }
 
-  async getDomains(options?: DomainLookupOptions): Promise<DomainsResponse> {
-    return this.requestJson<DomainsResponse>(domainsPath(options));
+  async listByType(type: DomainType): Promise<DomainsResponse> {
+    return this.core.requestJson<DomainsResponse>(`domains/${type}`);
   }
 
-  async createDomain(type: DomainType, kind: DomainKind, payload: DomainMutationPayload): Promise<DomainsResponse> {
-    return this.requestJson<DomainsResponse>(`domains/${type}/${kind}`, {
+  async listByKind(type: DomainType, kind: DomainKind): Promise<DomainsResponse> {
+    return this.core.requestJson<DomainsResponse>(`domains/${type}/${kind}`);
+  }
+
+  async get(type: DomainType, kind: DomainKind, domain: string): Promise<DomainsResponse> {
+    return this.core.requestJson<DomainsResponse>(`domains/${type}/${kind}/${encodeSegment(domain)}`);
+  }
+
+  async create(type: DomainType, kind: DomainKind, payload: DomainMutationPayload): Promise<DomainsResponse> {
+    return this.core.requestJson<DomainsResponse>(`domains/${type}/${kind}`, {
       method: 'POST',
       body: payload,
     });
   }
 
-  async replaceDomain(type: DomainType, kind: DomainKind, domain: string, payload: DomainReplacePayload): Promise<DomainsResponse> {
-    return this.requestJson<DomainsResponse>(`domains/${type}/${kind}/${encodeSegment(domain)}`, {
+  async replace(type: DomainType, kind: DomainKind, domain: string, payload: DomainReplacePayload): Promise<DomainsResponse> {
+    return this.core.requestJson<DomainsResponse>(`domains/${type}/${kind}/${encodeSegment(domain)}`, {
       method: 'PUT',
       body: payload,
     });
   }
 
-  async deleteDomain(type: DomainType, kind: DomainKind, domain: string): Promise<void> {
-    await this.requestVoid(`domains/${type}/${kind}/${encodeSegment(domain)}`, { method: 'DELETE' });
+  async delete(type: DomainType, kind: DomainKind, domain: string): Promise<void> {
+    await this.core.requestVoid(`domains/${type}/${kind}/${encodeSegment(domain)}`, { method: 'DELETE' });
   }
 
-  async deleteDomains(items: Array<{ item: string; type: DomainType; kind: DomainKind }>): Promise<void> {
-    await this.requestVoid('domains:batchDelete', {
+  async deleteMany(items: Array<{ item: string; type: DomainType; kind: DomainKind }>): Promise<void> {
+    await this.core.requestVoid('domains:batchDelete', {
       method: 'POST',
       body: items,
     });
   }
+}
 
-  async getGroups(name?: string): Promise<GroupsResponse> {
-    return this.requestJson<GroupsResponse>(name ? `groups/${encodeSegment(name)}` : 'groups');
+export class GroupsApi {
+  constructor(private readonly core: PiHoleClientCore) {}
+
+  async list(): Promise<GroupsResponse> {
+    return this.core.requestJson<GroupsResponse>('groups');
   }
 
-  async createGroup(payload: GroupMutationPayload): Promise<GroupsResponse> {
-    return this.requestJson<GroupsResponse>('groups', {
+  async get(name: string): Promise<GroupsResponse> {
+    return this.core.requestJson<GroupsResponse>(`groups/${encodeSegment(name)}`);
+  }
+
+  async create(payload: GroupMutationPayload): Promise<GroupsResponse> {
+    return this.core.requestJson<GroupsResponse>('groups', {
       method: 'POST',
       body: payload,
     });
   }
 
-  async replaceGroup(name: string, payload: GroupReplacePayload): Promise<GroupsResponse> {
-    return this.requestJson<GroupsResponse>(`groups/${encodeSegment(name)}`, {
+  async replace(name: string, payload: GroupReplacePayload): Promise<GroupsResponse> {
+    return this.core.requestJson<GroupsResponse>(`groups/${encodeSegment(name)}`, {
       method: 'PUT',
       body: payload,
     });
   }
 
-  async deleteGroup(name: string): Promise<void> {
-    await this.requestVoid(`groups/${encodeSegment(name)}`, { method: 'DELETE' });
+  async delete(name: string): Promise<void> {
+    await this.core.requestVoid(`groups/${encodeSegment(name)}`, { method: 'DELETE' });
   }
 
-  async deleteGroups(items: Array<{ item: string }>): Promise<void> {
-    await this.requestVoid('groups:batchDelete', {
+  async deleteMany(items: Array<{ item: string }>): Promise<void> {
+    await this.core.requestVoid('groups:batchDelete', {
       method: 'POST',
       body: items,
     });
   }
+}
 
-  async getClients(client?: string): Promise<ClientsResponse> {
-    return this.requestJson<ClientsResponse>(client ? `clients/${encodeSegment(client)}` : 'clients');
+export class ClientsApi {
+  constructor(private readonly core: PiHoleClientCore) {}
+
+  async list(): Promise<ClientsResponse> {
+    return this.core.requestJson<ClientsResponse>('clients');
   }
 
-  async createClient(payload: ClientMutationPayload): Promise<ClientsResponse> {
-    return this.requestJson<ClientsResponse>('clients', {
+  async get(client: string): Promise<ClientsResponse> {
+    return this.core.requestJson<ClientsResponse>(`clients/${encodeSegment(client)}`);
+  }
+
+  async create(payload: ClientMutationPayload): Promise<ClientsResponse> {
+    return this.core.requestJson<ClientsResponse>('clients', {
       method: 'POST',
       body: payload,
     });
   }
 
-  async replaceClient(client: string, payload: ClientReplacePayload): Promise<ClientsResponse> {
-    return this.requestJson<ClientsResponse>(`clients/${encodeSegment(client)}`, {
+  async replace(client: string, payload: ClientReplacePayload): Promise<ClientsResponse> {
+    return this.core.requestJson<ClientsResponse>(`clients/${encodeSegment(client)}`, {
       method: 'PUT',
       body: payload,
     });
   }
 
-  async deleteClient(client: string): Promise<void> {
-    await this.requestVoid(`clients/${encodeSegment(client)}`, { method: 'DELETE' });
+  async delete(client: string): Promise<void> {
+    await this.core.requestVoid(`clients/${encodeSegment(client)}`, { method: 'DELETE' });
   }
 
-  async deleteClients(items: Array<{ item: string }>): Promise<void> {
-    await this.requestVoid('clients:batchDelete', {
+  async deleteMany(items: Array<{ item: string }>): Promise<void> {
+    await this.core.requestVoid('clients:batchDelete', {
       method: 'POST',
       body: items,
     });
   }
 
-  async getClientSuggestions(): Promise<ClientSuggestionsResponse> {
-    return this.requestJson<ClientSuggestionsResponse>('clients/_suggestions');
+  async getSuggestions(): Promise<ClientSuggestionsResponse> {
+    return this.core.requestJson<ClientSuggestionsResponse>('clients/_suggestions');
+  }
+}
+
+export class ListsApi {
+  constructor(private readonly core: PiHoleClientCore) {}
+
+  async list(options?: ListLookupOptions): Promise<ListsResponse> {
+    return this.core.requestJson<ListsResponse>('lists', { query: options });
   }
 
-  async getLists(address?: string, options?: ListLookupOptions): Promise<ListsResponse> {
-    const path = address ? `lists/${encodeSegment(address)}` : 'lists';
-    return this.requestJson<ListsResponse>(path, { query: options });
+  async get(address: string, options?: ListLookupOptions): Promise<ListsResponse> {
+    return this.core.requestJson<ListsResponse>(`lists/${encodeSegment(address)}`, { query: options });
   }
 
-  async createList(type: ListType, payload: ListMutationPayload): Promise<ListsResponse> {
-    return this.requestJson<ListsResponse>('lists', {
+  async create(type: ListType, payload: ListMutationPayload): Promise<ListsResponse> {
+    return this.core.requestJson<ListsResponse>('lists', {
       method: 'POST',
       query: { type },
       body: payload,
     });
   }
 
-  async replaceList(address: string, payload: ListReplacePayload): Promise<ListsResponse> {
-    return this.requestJson<ListsResponse>(`lists/${encodeSegment(address)}`, {
+  async replace(address: string, payload: ListReplacePayload): Promise<ListsResponse> {
+    return this.core.requestJson<ListsResponse>(`lists/${encodeSegment(address)}`, {
       method: 'PUT',
       query: { type: payload.type },
       body: payload,
     });
   }
 
-  async deleteList(address: string, type: ListType): Promise<void> {
-    await this.requestVoid(`lists/${encodeSegment(address)}`, {
+  async delete(address: string, type: ListType): Promise<void> {
+    await this.core.requestVoid(`lists/${encodeSegment(address)}`, {
       method: 'DELETE',
       query: { type },
     });
   }
 
-  async deleteLists(items: Array<{ item: string; type: ListType }>): Promise<void> {
-    await this.requestVoid('lists:batchDelete', {
+  async deleteMany(items: Array<{ item: string; type: ListType }>): Promise<void> {
+    await this.core.requestVoid('lists:batchDelete', {
       method: 'POST',
       body: items,
     });

@@ -25,7 +25,7 @@ interface SessionAuthResult {
   validity: number;
 }
 
-export abstract class PiHoleClientCore {
+export class PiHoleClientCore {
   readonly #baseUrl: string;
   readonly #password: string;
   readonly #timeoutMs: number;
@@ -33,7 +33,7 @@ export abstract class PiHoleClientCore {
   readonly #fetch: typeof globalThis.fetch;
   readonly #sessionStore: SessionStore;
 
-  protected constructor({ baseUrl, password = '', timeoutMs = 10_000, userAgent, fetch: fetchImpl, sessionStore }: PiHoleClientOptions) {
+  constructor({ baseUrl, password = '', timeoutMs = 10_000, userAgent, fetch: fetchImpl, sessionStore }: PiHoleClientOptions) {
     if (typeof timeoutMs !== 'number' || !Number.isFinite(timeoutMs) || timeoutMs <= 0) {
       throw new TypeError('timeoutMs must be a positive finite number');
     }
@@ -53,23 +53,23 @@ export abstract class PiHoleClientCore {
     }
   }
 
-  protected async requestJson<T>(path: string, options: InternalRequestOptions = {}): Promise<T> {
+  async requestJson<T>(path: string, options: InternalRequestOptions = {}): Promise<T> {
     return this.request<T>(path, { ...options, parseAs: 'json' });
   }
 
-  protected async requestText(path: string, options: InternalRequestOptions = {}): Promise<string> {
+  async requestText(path: string, options: InternalRequestOptions = {}): Promise<string> {
     return this.request<string>(path, { ...options, parseAs: 'text' });
   }
 
-  protected async requestArrayBuffer(path: string, options: InternalRequestOptions = {}): Promise<ArrayBuffer> {
+  async requestArrayBuffer(path: string, options: InternalRequestOptions = {}): Promise<ArrayBuffer> {
     return this.request<ArrayBuffer>(path, { ...options, parseAs: 'arrayBuffer' });
   }
 
-  protected async requestVoid(path: string, options: InternalRequestOptions = {}): Promise<void> {
+  async requestVoid(path: string, options: InternalRequestOptions = {}): Promise<void> {
     await this.request(path, { ...options, parseAs: 'void' });
   }
 
-  protected async loginWithCredentials(credentials: AuthRequest): Promise<AuthResponse> {
+  async loginWithCredentials(credentials: AuthRequest): Promise<AuthResponse> {
     return this.requestJson<AuthResponse>('auth', {
       auth: 'none',
       method: 'POST',
@@ -77,7 +77,7 @@ export abstract class PiHoleClientCore {
     });
   }
 
-  protected async logoutSession(): Promise<void> {
+  async logoutSession(): Promise<void> {
     await this.requestVoid('auth', { method: 'DELETE' });
     await this.#sessionStore.delete(this.#baseUrl);
   }

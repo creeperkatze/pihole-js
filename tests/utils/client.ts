@@ -1,4 +1,5 @@
 import type { PiHoleClientOptions, SessionEntry, SessionStore } from '../../src/types/index.ts';
+import { PiHoleClient } from '../../src/client/pihole.ts';
 import { createMockFetch, type MockFetch } from './http.ts';
 
 export class TestSessionStore implements SessionStore {
@@ -19,19 +20,17 @@ export class TestSessionStore implements SessionStore {
   }
 }
 
-interface CreateClientOptions<TClient> {
-  Client: new (options: PiHoleClientOptions) => TClient;
+interface CreateClientOptions {
   responses: Response[];
   options?: Partial<PiHoleClientOptions>;
   seedSession?: boolean;
 }
 
-export function createTestClient<TClient>({
-  Client,
+export function createTestClient({
   responses,
   options = {},
   seedSession = true,
-}: CreateClientOptions<TClient>): { client: TClient; fetch: MockFetch; sessionStore: TestSessionStore } {
+}: CreateClientOptions): { client: PiHoleClient; fetch: MockFetch; sessionStore: TestSessionStore } {
   const fetch = createMockFetch(...responses);
   const sessionStore = options.sessionStore instanceof TestSessionStore ? options.sessionStore : new TestSessionStore();
 
@@ -42,7 +41,7 @@ export function createTestClient<TClient>({
     });
   }
 
-  const client = new Client({
+  const client = new PiHoleClient({
     baseUrl: 'http://pi.hole',
     fetch,
     sessionStore,

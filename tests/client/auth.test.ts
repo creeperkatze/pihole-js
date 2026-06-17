@@ -1,18 +1,16 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 
-import { AuthClient } from '../../src/client/auth.ts';
 import { createTestClient, TestSessionStore } from '../utils/client.ts';
 import { jsonResponse } from '../utils/http.ts';
 
 test('checkAuth calls the unauthenticated auth endpoint', async () => {
   const { client, fetch } = createTestClient({
-    Client: AuthClient,
     responses: [jsonResponse({ session: { valid: true } })],
     seedSession: false,
   });
 
-  await client.checkAuth();
+  await client.auth.check();
 
   assert.equal(String(fetch.calls[0].input), 'http://pi.hole/api/auth');
   assert.equal(fetch.calls[0].init?.method ?? 'GET', 'GET');
@@ -21,12 +19,11 @@ test('checkAuth calls the unauthenticated auth endpoint', async () => {
 
 test('login with credentials posts the password body to /auth', async () => {
   const { client, fetch } = createTestClient({
-    Client: AuthClient,
     responses: [jsonResponse({ session: { valid: true, sid: 'abc', validity: 60 } })],
     seedSession: false,
   });
 
-  await client.login({ password: 'secret' });
+  await client.auth.login({ password: 'secret' });
 
   assert.equal(String(fetch.calls[0].input), 'http://pi.hole/api/auth');
   assert.equal(fetch.calls[0].init?.method, 'POST');
@@ -37,14 +34,13 @@ test('login without credentials reuses an existing session and fetches auth stat
   const store = new TestSessionStore();
   store.entries.set('http://pi.hole', { sid: 'cached', expiresAt: Date.now() + 60_000 });
   const { client, fetch } = createTestClient({
-    Client: AuthClient,
     responses: [jsonResponse({ session: { valid: true, sid: 'cached', validity: 60 } })],
     options: {
       sessionStore: store,
     },
   });
 
-  await client.login();
+  await client.auth.login();
 
   assert.equal(String(fetch.calls[0].input), 'http://pi.hole/api/auth');
   assert.equal((fetch.calls[0].init?.headers as Headers).has('sid'), false);
@@ -55,7 +51,6 @@ test('session management endpoints use the expected routes and methods', async (
   const store = new TestSessionStore();
   store.entries.set('http://pi.hole', { sid: 'cached', expiresAt: Date.now() + 60_000 });
   const { client, fetch, sessionStore } = createTestClient({
-    Client: AuthClient,
     responses: [
       jsonResponse({ sessions: [] }),
       jsonResponse({ totp: { enabled: true } }),
@@ -66,11 +61,11 @@ test('session management endpoints use the expected routes and methods', async (
     options: { sessionStore: store },
   });
 
-  await client.getSessions();
-  await client.getTotp();
-  await client.deleteSession(123);
-  await client.createAppPassword();
-  await client.logout();
+  await client.auth.getSessions();
+  await client.auth.getTotp();
+  await client.auth.deleteSession(123);
+  await client.auth.createAppPassword();
+  await client.auth.logout();
 
   assert.equal(String(fetch.calls[0].input), 'http://pi.hole/api/auth/sessions');
   assert.equal(String(fetch.calls[1].input), 'http://pi.hole/api/auth/totp');

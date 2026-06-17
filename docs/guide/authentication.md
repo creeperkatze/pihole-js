@@ -35,7 +35,7 @@ The client will:
 
 ## Related methods
 
-- `client.checkAuth()`
-- `client.login(credentials?)`
-- `client.logout()`
-- `client.getSessions()`
+- `client.auth.check()`
+- `client.auth.login(credentials?)`
+- `client.auth.logout()`
+- `client.auth.getSessions()`

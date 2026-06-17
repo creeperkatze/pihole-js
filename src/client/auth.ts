@@ -4,45 +4,42 @@ import type {
   AuthRequest,
   AuthResponse,
   AuthSessionsResponse,
-  PiHoleClientOptions,
   TotpResponse,
 } from '../types/index.js';
 import { encodeSegment } from '../utils/domain.js';
 
-export class AuthClient extends PiHoleClientCore {
-  constructor(options: PiHoleClientOptions) {
-    super(options);
-  }
+export class AuthApi {
+  constructor(private readonly core: PiHoleClientCore) {}
 
-  async checkAuth(): Promise<AuthResponse> {
-    return this.requestJson<AuthResponse>('auth', { auth: 'none' });
+  async check(): Promise<AuthResponse> {
+    return this.core.requestJson<AuthResponse>('auth', { auth: 'none' });
   }
 
   async login(credentials?: AuthRequest): Promise<AuthResponse> {
     if (credentials) {
-      return this.loginWithCredentials(credentials);
+      return this.core.loginWithCredentials(credentials);
     }
 
-    return this.withSession(async () => this.requestJson<AuthResponse>('auth', { auth: 'none' }));
+    return this.core.withSession(async () => this.core.requestJson<AuthResponse>('auth', { auth: 'none' }));
   }
 
   async logout(): Promise<void> {
-    await this.logoutSession();
+    await this.core.logoutSession();
   }
 
   async getSessions(): Promise<AuthSessionsResponse> {
-    return this.requestJson<AuthSessionsResponse>('auth/sessions');
+    return this.core.requestJson<AuthSessionsResponse>('auth/sessions');
   }
 
   async getTotp(): Promise<TotpResponse> {
-    return this.requestJson<TotpResponse>('auth/totp');
+    return this.core.requestJson<TotpResponse>('auth/totp');
   }
 
   async deleteSession(id: number): Promise<void> {
-    await this.requestVoid(`auth/session/${encodeSegment(id)}`, { method: 'DELETE' });
+    await this.core.requestVoid(`auth/session/${encodeSegment(id)}`, { method: 'DELETE' });
   }
 
   async createAppPassword(): Promise<AppPasswordResponse> {
-    return this.requestJson<AppPasswordResponse>('auth/app');
+    return this.core.requestJson<AppPasswordResponse>('auth/app');
   }
 }

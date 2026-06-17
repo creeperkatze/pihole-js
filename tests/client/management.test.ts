@@ -1,21 +1,19 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 
-import { ManagementClient } from '../../src/client/management.ts';
 import { createTestClient } from '../utils/client.ts';
 import { jsonResponse } from '../utils/http.ts';
 
 test('domain endpoints build typed paths and encode domain names', async () => {
   const { client, fetch } = createTestClient({
-    Client: ManagementClient,
     responses: [jsonResponse({}), jsonResponse({}), jsonResponse({}), new Response(null, { status: 204 }), new Response(null, { status: 204 })],
   });
 
-  await client.getDomains({ type: 'allow', kind: 'exact', domain: 'pi.hole/test' });
-  await client.createDomain('allow', 'exact', { domain: 'pi.hole' });
-  await client.replaceDomain('deny', 'regex', 'a/b', { comment: 'x' });
-  await client.deleteDomain('deny', 'regex', 'a/b');
-  await client.deleteDomains([{ item: 'x', type: 'allow', kind: 'exact' }]);
+  await client.domains.get('allow', 'exact', 'pi.hole/test');
+  await client.domains.create('allow', 'exact', { domain: 'pi.hole' });
+  await client.domains.replace('deny', 'regex', 'a/b', { comment: 'x' });
+  await client.domains.delete('deny', 'regex', 'a/b');
+  await client.domains.deleteMany([{ item: 'x', type: 'allow', kind: 'exact' }]);
 
   assert.equal(String(fetch.calls[0].input), 'http://pi.hole/api/domains/allow/exact/pi.hole%2Ftest');
   assert.equal(String(fetch.calls[1].input), 'http://pi.hole/api/domains/allow/exact');
@@ -29,16 +27,15 @@ test('domain endpoints build typed paths and encode domain names', async () => {
 
 test('group and client endpoints use collection and item routes', async () => {
   const { client, fetch } = createTestClient({
-    Client: ManagementClient,
     responses: [jsonResponse({}), jsonResponse({}), jsonResponse({}), jsonResponse({}), jsonResponse({}), new Response(null, { status: 204 })],
   });
 
-  await client.getGroups('Default Group');
-  await client.createGroup({ name: 'Kids' });
-  await client.replaceClient('Laptop / 1', { groups: [1] });
-  await client.getClients();
-  await client.getClientSuggestions();
-  await client.deleteClients([{ item: 'Laptop' }]);
+  await client.groups.get('Default Group');
+  await client.groups.create({ name: 'Kids' });
+  await client.clients.replace('Laptop / 1', { groups: [1] });
+  await client.clients.list();
+  await client.clients.getSuggestions();
+  await client.clients.deleteMany([{ item: 'Laptop' }]);
 
   assert.equal(String(fetch.calls[0].input), 'http://pi.hole/api/groups/Default%20Group');
   assert.equal(String(fetch.calls[1].input), 'http://pi.hole/api/groups');
@@ -52,15 +49,14 @@ test('group and client endpoints use collection and item routes', async () => {
 
 test('list endpoints attach type query params where required', async () => {
   const { client, fetch } = createTestClient({
-    Client: ManagementClient,
     responses: [jsonResponse({}), jsonResponse({}), jsonResponse({}), new Response(null, { status: 204 }), new Response(null, { status: 204 })],
   });
 
-  await client.getLists('https://example.com/list.txt', { type: 'allow' });
-  await client.createList('block', { address: 'https://example.com/list.txt' });
-  await client.replaceList('https://example.com/list.txt', { type: 'allow', comment: 'updated' });
-  await client.deleteList('https://example.com/list.txt', 'block');
-  await client.deleteLists([{ item: 'https://example.com/list.txt', type: 'allow' }]);
+  await client.lists.get('https://example.com/list.txt', { type: 'allow' });
+  await client.lists.create('block', { address: 'https://example.com/list.txt' });
+  await client.lists.replace('https://example.com/list.txt', { type: 'allow', comment: 'updated' });
+  await client.lists.delete('https://example.com/list.txt', 'block');
+  await client.lists.deleteMany([{ item: 'https://example.com/list.txt', type: 'allow' }]);
 
   assert.equal(String(fetch.calls[0].input), 'http://pi.hole/api/lists/https%3A%2F%2Fexample.com%2Flist.txt?type=allow');
   assert.equal(String(fetch.calls[1].input), 'http://pi.hole/api/lists?type=block');
