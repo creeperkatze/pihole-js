@@ -34,6 +34,10 @@ console.log(summary);
 console.log(blocking);
 ```
 
+## 📚 Documentation
+
+The docs can be found [here](https://docs.creeperkatze.dev/pihole-js/).
+
 ## 📖 API
 
 ### `new PiHoleClient(options)`
@@ -154,10 +158,6 @@ const client = new PiHoleClient({
   fetch,
 });
 ```
-
-## 📚 Documentation
-
-The docs can be found [here](https://docs.creeperkatze.dev/pihole-js/).
 
 ## ⚠️ Error Handling
 
