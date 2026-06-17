@@ -296,6 +296,26 @@ test('requestJson turns aborted fetches into timeout errors', async () => {
   });
 });
 
+test('requestJson uses a bound default fetch implementation', async () => {
+  const originalFetch = globalThis.fetch;
+  globalThis.fetch = function (this: typeof globalThis, input: RequestInfo | URL, init?: RequestInit) {
+    assert.equal(this, globalThis);
+    return Promise.resolve(jsonResponse({ ok: true }));
+  } as typeof globalThis.fetch;
+
+  try {
+    const client = new TestClient({
+      baseUrl: 'http://pi.hole',
+    });
+
+    const response = await client.json<{ ok: boolean }>('docs', { auth: 'none' });
+
+    assert.deepEqual(response, { ok: true });
+  } finally {
+    globalThis.fetch = originalFetch;
+  }
+});
+
 test('requestJson surfaces API error messages and metadata', async () => {
   const fetch = createMockFetch(
     jsonResponse(

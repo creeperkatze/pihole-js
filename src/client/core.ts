@@ -45,7 +45,7 @@ export abstract class PiHoleClientCore {
     this.#password = password;
     this.#timeoutMs = timeoutMs;
     this.#userAgent = userAgent ?? null;
-    this.#fetch = fetchImpl ?? globalThis.fetch;
+    this.#fetch = fetchImpl ?? ((...args) => globalThis.fetch(...args));
     this.#sessionStore = sessionStore ?? new MemorySessionStore();
 
     if (typeof this.#fetch !== 'function') {
