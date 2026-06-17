@@ -157,20 +157,7 @@ const client = new PiHoleClient({
 
 ## 📚 Documentation
 
-Project documentation now lives in `docs/`:
-
-- guides are written with VitePress
-- API reference pages are generated with TypeDoc
-
-Useful commands:
-
-```sh
-pnpm docs:api
-pnpm docs:dev
-pnpm docs:build
-```
-
-The docs site can also be built into a container image. The provided `Dockerfile.docs` is set up for subpath hosting such as `docs.creeperkatze.dev/pihole-js`.
+The docs can be found [here](https://docs.creeperkatze.dev/pihole-js/).
 
 ## ⚠️ Error Handling
 
