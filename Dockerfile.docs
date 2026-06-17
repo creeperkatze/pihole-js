@@ -1,0 +1,28 @@
+FROM node:24-alpine AS build
+
+WORKDIR /app
+
+COPY package.json pnpm-lock.yaml pnpm-workspace.yaml tsconfig.json typedoc.json ./
+COPY src ./src
+COPY docs ./docs
+
+RUN corepack enable
+RUN pnpm install --frozen-lockfile
+
+ARG DOCS_BASE=/pihole-js/
+ENV DOCS_BASE=${DOCS_BASE}
+
+RUN pnpm docs:build \
+  && base="${DOCS_BASE%/}" \
+  && mkdir -p "/out${base}" \
+  && cp -r docs/.vitepress/dist/* "/out${base}/"
+
+FROM nginx:alpine
+
+ARG DOCS_BASE=/pihole-js/
+ENV DOCS_BASE=${DOCS_BASE}
+
+COPY docker/docs-nginx.conf.template /etc/nginx/templates/default.conf.template
+COPY --from=build /out/ /usr/share/nginx/html/
+
+EXPOSE 8080

@@ -3,6 +3,13 @@ import path from 'node:path';
 
 import { defineConfig } from 'vitepress';
 
+function normalizeBase(base: string): string {
+  if (!base) return '/';
+
+  const withLeadingSlash = base.startsWith('/') ? base : `/${base}`;
+  return withLeadingSlash.endsWith('/') ? withLeadingSlash : `${withLeadingSlash}/`;
+}
+
 interface SidebarItem {
   text: string;
   link: string;
@@ -55,9 +62,12 @@ const apiSidebar = [
   },
 ];
 
+const base = normalizeBase(process.env.DOCS_BASE ?? '/');
+
 export default defineConfig({
   title: 'pihole-js',
   description: 'A framework-agnostic JavaScript client for the Pi-hole v6 API.',
+  base,
   cleanUrls: true,
   themeConfig: {
     nav: [

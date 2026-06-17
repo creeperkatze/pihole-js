@@ -169,6 +169,8 @@ pnpm docs:dev
 pnpm docs:build
 ```
 
+The docs site can also be built into a container image. The provided `Dockerfile.docs` is set up for subpath hosting such as `docs.creeperkatze.dev/pihole-js`.
+
 ## ⚠️ Error Handling
 
 All request, authentication, timeout, and API errors are thrown as `PiHoleError`.
