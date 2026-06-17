@@ -15,7 +15,7 @@
   "scripts": {
     "build": "tsc",
     "docs:api": "typedoc --options typedoc.json",
-    "docs:dev": "pnpm docs:api && vitepress dev docs",
+    "docs:dev": "concurrently -n typedoc,vitepress -c yellow,cyan \"typedoc --options typedoc.json --watch\" \"vitepress dev docs\"",
     "docs:build": "pnpm docs:api && vitepress build docs",
     "docs:preview": "vitepress preview docs",
     "lint": "eslint .",
@@ -47,6 +47,7 @@
     "@eslint/js": "^10.0.1",
     "@types/node": "^25.9.3",
     "@vitest/coverage-v8": "^2.1.9",
+    "concurrently": "^10.0.3",
     "eslint": "^10.5.0",
     "globals": "^17.6.0",
     "typedoc": "^0.28.19",

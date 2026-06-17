@@ -2,9 +2,25 @@
 
 ## Installation
 
-```sh
+::: code-group
+
+```sh [pnpm]
 pnpm add pihole-js
 ```
+
+```sh [npm]
+npm install pihole-js
+```
+
+```sh [yarn]
+yarn add pihole-js
+```
+
+```sh [bun]
+bun add pihole-js
+```
+
+:::
 
 ## Create a client
 
@@ -21,8 +37,8 @@ const client = new PiHoleClient({
 ## Fetch some data
 
 ```ts
-const summary = await client.metrics.getSummary();
-const blocking = await client.dns.getBlocking();
+const summary = await client.stats.getSummary();
+const status = await client.dns.getStatus();
 ```
 
 ## Common options
