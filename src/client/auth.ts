@@ -31,7 +31,7 @@ export class AuthApi {
     return this.core.requestJson<AuthSessionsResponse>('auth/sessions');
   }
 
-  async getTotp(): Promise<TotpResponse> {
+  async generateTotp(): Promise<TotpResponse> {
     return this.core.requestJson<TotpResponse>('auth/totp');
   }
 

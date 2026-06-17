@@ -18,7 +18,7 @@ import type {
   UpstreamsResponse,
 } from '../types/index.js';
 
-export class MetricsApi {
+export class StatsApi {
   constructor(private readonly core: PiHoleClientCore) {}
 
   async getSummary(): Promise<SummaryStatsResponse> {
@@ -64,28 +64,36 @@ export class MetricsApi {
   async getRecentBlocked(count?: number): Promise<RecentBlockedResponse> {
     return this.core.requestJson<RecentBlockedResponse>('stats/recent_blocked', { query: { count } });
   }
+}
 
-  async getHistory(): Promise<HistoryResponse> {
+export class HistoryApi {
+  constructor(private readonly core: PiHoleClientCore) {}
+
+  async get(): Promise<HistoryResponse> {
     return this.core.requestJson<HistoryResponse>('history');
   }
 
-  async getHistoryClients(options?: HistoryClientsOptions): Promise<ClientHistoryResponse> {
+  async getClients(options?: HistoryClientsOptions): Promise<ClientHistoryResponse> {
     return this.core.requestJson<ClientHistoryResponse>('history/clients', { query: options });
   }
 
-  async getHistoryDatabase(options: Pick<DatabaseQueryOptions, 'from' | 'until'>): Promise<HistoryResponse> {
+  async getDatabase(options: Pick<DatabaseQueryOptions, 'from' | 'until'>): Promise<HistoryResponse> {
     return this.core.requestJson<HistoryResponse>('history/database', { query: options });
   }
 
-  async getHistoryDatabaseClients(options: Pick<DatabaseQueryOptions, 'from' | 'until'>): Promise<ClientHistoryResponse> {
+  async getDatabaseClients(options: Pick<DatabaseQueryOptions, 'from' | 'until'>): Promise<ClientHistoryResponse> {
     return this.core.requestJson<ClientHistoryResponse>('history/database/clients', { query: options });
   }
+}
 
-  async getQueries(options?: QueryListOptions): Promise<QueriesResponse> {
+export class QueriesApi {
+  constructor(private readonly core: PiHoleClientCore) {}
+
+  async list(options?: QueryListOptions): Promise<QueriesResponse> {
     return this.core.requestJson<QueriesResponse>('queries', { query: options });
   }
 
-  async getQuerySuggestions(): Promise<QuerySuggestionsResponse> {
+  async getSuggestions(): Promise<QuerySuggestionsResponse> {
     return this.core.requestJson<QuerySuggestionsResponse>('queries/suggestions');
   }
 }
@@ -93,8 +101,16 @@ export class MetricsApi {
 export class DnsApi {
   constructor(private readonly core: PiHoleClientCore) {}
 
-  async getBlocking(): Promise<BlockingStatus> {
+  async getStatus(): Promise<BlockingStatus> {
     return this.core.requestJson<BlockingStatus>('dns/blocking');
+  }
+
+  async enable(): Promise<BlockingStatus> {
+    return this.setBlocking(true);
+  }
+
+  async disable(seconds?: number): Promise<BlockingStatus> {
+    return this.setBlocking(false, seconds);
   }
 
   async setBlocking(blocking: boolean, timer?: number | null): Promise<BlockingStatus> {

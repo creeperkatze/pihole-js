@@ -1,22 +1,24 @@
 import { PiHoleClientCore } from './core.js';
 import type {
   ClientMutationPayload,
-  ClientReplacePayload,
+  ClientUpdatePayload,
   ClientSuggestionsResponse,
   ClientsResponse,
   DomainKind,
   DomainMutationPayload,
-  DomainReplacePayload,
+  DomainUpdatePayload,
   DomainType,
   DomainsResponse,
   GroupMutationPayload,
-  GroupReplacePayload,
+  GroupUpdatePayload,
   GroupsResponse,
   ListLookupOptions,
   ListMutationPayload,
-  ListReplacePayload,
+  ListUpdatePayload,
   ListsResponse,
   ListType,
+  SearchOptions,
+  SearchResponse,
 } from '../types/index.js';
 import { encodeSegment } from '../utils/domain.js';
 
@@ -46,7 +48,7 @@ export class DomainsApi {
     });
   }
 
-  async replace(type: DomainType, kind: DomainKind, domain: string, payload: DomainReplacePayload): Promise<DomainsResponse> {
+  async update(type: DomainType, kind: DomainKind, domain: string, payload: DomainUpdatePayload): Promise<DomainsResponse> {
     return this.core.requestJson<DomainsResponse>(`domains/${type}/${kind}/${encodeSegment(domain)}`, {
       method: 'PUT',
       body: payload,
@@ -57,11 +59,47 @@ export class DomainsApi {
     await this.core.requestVoid(`domains/${type}/${kind}/${encodeSegment(domain)}`, { method: 'DELETE' });
   }
 
-  async deleteMany(items: Array<{ item: string; type: DomainType; kind: DomainKind }>): Promise<void> {
+  async batchDelete(items: Array<{ item: string; type: DomainType; kind: DomainKind }>): Promise<void> {
     await this.core.requestVoid('domains:batchDelete', {
       method: 'POST',
       body: items,
     });
+  }
+
+  async allow(domain: string, comment?: string): Promise<DomainsResponse> {
+    return this.create('allow', 'exact', { domain, comment });
+  }
+
+  async unallow(domain: string): Promise<void> {
+    return this.delete('allow', 'exact', domain);
+  }
+
+  async getAllowlist(): Promise<DomainsResponse> {
+    return this.listByKind('allow', 'exact');
+  }
+
+  async deny(domain: string, comment?: string): Promise<DomainsResponse> {
+    return this.create('deny', 'exact', { domain, comment });
+  }
+
+  async undeny(domain: string): Promise<void> {
+    return this.delete('deny', 'exact', domain);
+  }
+
+  async getDenylist(): Promise<DomainsResponse> {
+    return this.listByKind('deny', 'exact');
+  }
+
+  async allowRegex(pattern: string, comment?: string): Promise<DomainsResponse> {
+    return this.create('allow', 'regex', { domain: pattern, comment });
+  }
+
+  async denyRegex(pattern: string, comment?: string): Promise<DomainsResponse> {
+    return this.create('deny', 'regex', { domain: pattern, comment });
+  }
+
+  async search(domain: string, options?: SearchOptions): Promise<SearchResponse> {
+    return this.core.requestJson<SearchResponse>(`search/${encodeSegment(domain)}`, { query: options });
   }
 }
 
@@ -83,7 +121,7 @@ export class GroupsApi {
     });
   }
 
-  async replace(name: string, payload: GroupReplacePayload): Promise<GroupsResponse> {
+  async update(name: string, payload: GroupUpdatePayload): Promise<GroupsResponse> {
     return this.core.requestJson<GroupsResponse>(`groups/${encodeSegment(name)}`, {
       method: 'PUT',
       body: payload,
@@ -94,7 +132,7 @@ export class GroupsApi {
     await this.core.requestVoid(`groups/${encodeSegment(name)}`, { method: 'DELETE' });
   }
 
-  async deleteMany(items: Array<{ item: string }>): Promise<void> {
+  async batchDelete(items: Array<{ item: string }>): Promise<void> {
     await this.core.requestVoid('groups:batchDelete', {
       method: 'POST',
       body: items,
@@ -120,7 +158,7 @@ export class ClientsApi {
     });
   }
 
-  async replace(client: string, payload: ClientReplacePayload): Promise<ClientsResponse> {
+  async update(client: string, payload: ClientUpdatePayload): Promise<ClientsResponse> {
     return this.core.requestJson<ClientsResponse>(`clients/${encodeSegment(client)}`, {
       method: 'PUT',
       body: payload,
@@ -131,7 +169,7 @@ export class ClientsApi {
     await this.core.requestVoid(`clients/${encodeSegment(client)}`, { method: 'DELETE' });
   }
 
-  async deleteMany(items: Array<{ item: string }>): Promise<void> {
+  async batchDelete(items: Array<{ item: string }>): Promise<void> {
     await this.core.requestVoid('clients:batchDelete', {
       method: 'POST',
       body: items,
@@ -162,7 +200,7 @@ export class ListsApi {
     });
   }
 
-  async replace(address: string, payload: ListReplacePayload): Promise<ListsResponse> {
+  async update(address: string, payload: ListUpdatePayload): Promise<ListsResponse> {
     return this.core.requestJson<ListsResponse>(`lists/${encodeSegment(address)}`, {
       method: 'PUT',
       query: { type: payload.type },
@@ -177,7 +215,7 @@ export class ListsApi {
     });
   }
 
-  async deleteMany(items: Array<{ item: string; type: ListType }>): Promise<void> {
+  async batchDelete(items: Array<{ item: string; type: ListType }>): Promise<void> {
     await this.core.requestVoid('lists:batchDelete', {
       method: 'POST',
       body: items,

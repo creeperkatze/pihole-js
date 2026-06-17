@@ -6,7 +6,6 @@ import type {
   CountResponse,
   DetailedNetworkOptions,
   DhcpLeasesResponse,
-  EndpointsResponse,
   GatewayResponse,
   GenericApiResponse,
   GravityOptions,
@@ -17,8 +16,6 @@ import type {
   NetworkDevicesResponse,
   PaddResponse,
   RoutesResponse,
-  SearchOptions,
-  SearchResponse,
   SuccessResponse,
   TeleporterImportResponse,
   TeleporterImportSelection,
@@ -60,8 +57,7 @@ export class InfoApi {
     return this.core.requestJson<GenericApiResponse>('info/messages');
   }
 
-  async deleteMessages(messageIds: string | number | Array<string | number>): Promise<void> {
-    const id = Array.isArray(messageIds) ? messageIds.join(',') : String(messageIds);
+  async deleteMessage(id: number): Promise<void> {
     await this.core.requestVoid(`info/messages/${encodeSegment(id)}`, { method: 'DELETE' });
   }
 
@@ -81,24 +77,16 @@ export class InfoApi {
 export class LogsApi {
   constructor(private readonly core: PiHoleClientCore) {}
 
-  async getDnsmasqLog(options?: LogsOptions): Promise<LogsResponse> {
+  async getDnsmasq(options?: LogsOptions): Promise<LogsResponse> {
     return this.core.requestJson<LogsResponse>('logs/dnsmasq', { query: options });
   }
 
-  async getFtlLog(options?: LogsOptions): Promise<LogsResponse> {
+  async getFtl(options?: LogsOptions): Promise<LogsResponse> {
     return this.core.requestJson<LogsResponse>('logs/ftl', { query: options });
   }
 
-  async getWebserverLog(options?: LogsOptions): Promise<LogsResponse> {
+  async getWebserver(options?: LogsOptions): Promise<LogsResponse> {
     return this.core.requestJson<LogsResponse>('logs/webserver', { query: options });
-  }
-}
-
-export class EndpointsApi {
-  constructor(private readonly core: PiHoleClientCore) {}
-
-  async list(): Promise<EndpointsResponse> {
-    return this.core.requestJson<EndpointsResponse>('endpoints');
   }
 }
 
@@ -191,7 +179,7 @@ export class TeleporterApi {
 export class ActionsApi {
   constructor(private readonly core: PiHoleClientCore) {}
 
-  async runGravity(options?: GravityOptions): Promise<string> {
+  async updateGravity(options?: GravityOptions): Promise<string> {
     return this.core.requestText('action/gravity', {
       method: 'POST',
       query: options,
@@ -224,14 +212,6 @@ export class DhcpApi {
 
   async deleteLease(ip: string): Promise<void> {
     await this.core.requestVoid(`dhcp/leases/${encodeSegment(ip)}`, { method: 'DELETE' });
-  }
-}
-
-export class SearchApi {
-  constructor(private readonly core: PiHoleClientCore) {}
-
-  async lookup(domain: string, options?: SearchOptions): Promise<SearchResponse> {
-    return this.core.requestJson<SearchResponse>(`search/${encodeSegment(domain)}`, { query: options });
   }
 }
 

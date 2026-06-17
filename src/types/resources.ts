@@ -136,7 +136,7 @@ export interface DomainMutationPayload {
   enabled?: boolean;
 }
 
-export interface DomainReplacePayload {
+export interface DomainUpdatePayload {
   type?: DomainType;
   kind?: DomainKind;
   comment?: string | null;
@@ -150,7 +150,7 @@ export interface GroupMutationPayload {
   enabled?: boolean;
 }
 
-export interface GroupReplacePayload {
+export interface GroupUpdatePayload {
   name?: string;
   comment?: string | null;
   enabled?: boolean;
@@ -162,7 +162,7 @@ export interface ClientMutationPayload {
   groups?: number[];
 }
 
-export interface ClientReplacePayload {
+export interface ClientUpdatePayload {
   comment?: string | null;
   groups?: number[];
 }
@@ -174,7 +174,7 @@ export interface ListMutationPayload {
   enabled?: boolean;
 }
 
-export interface ListReplacePayload {
+export interface ListUpdatePayload {
   type: ListType;
   comment?: string | null;
   groups?: number[];
