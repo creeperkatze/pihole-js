@@ -10,6 +10,11 @@ A framework-agnostic JavaScript client for the Pi-hole v6 API.
 ![GitHub Pull Requests](https://img.shields.io/github/issues-pr/creeperkatze/pihole-js?labelColor=0d143c)
 ![GitHub Repo stars](https://img.shields.io/github/stars/creeperkatze/pihole-js?style=flat&labelColor=0d143c)
 
+[📚 Docs](https://pihole-js.creeperkatze.dev/) •
+[🚀 Getting Started](https://pihole-js.creeperkatze.dev/guide/getting-started) •
+[📖 API Reference](https://pihole-js.creeperkatze.dev/api/) •
+[📝 Changelog](https://github.com/creeperkatze/pihole-js/releases)
+
 ## 📦 Installation
 
 ```sh
@@ -36,10 +41,6 @@ const blocking = await client.dns.getBlocking();
 console.log(summary);
 console.log(blocking);
 ```
-
-## 📚 Documentation
-
-The docs can be found [here](https://pihole-js.creeperkatze.dev).
 
 ## 📖 API
 
@@ -188,9 +189,10 @@ try {
 ## 👨‍💻 Development
 
 ```sh
+pnpm build
+
 pnpm test
 pnpm test:coverage
-pnpm build
 ```
 
 ## 📜 License
