@@ -1,18 +1,22 @@
+import { ActionsApi } from './action.js';
 import { AuthApi } from './auth.js';
+import { ClientsApi } from './clients.js';
+import { ConfigApi } from './config.js';
+import { DhcpApi } from './dhcp.js';
+import { DnsApi } from './dns.js';
+import { DocsApi } from './docs.js';
+import { DomainsApi } from './domains.js';
+import { GroupsApi } from './groups.js';
+import { HistoryApi } from './history.js';
+import { InfoApi } from './info.js';
+import { ListsApi } from './lists.js';
+import { LogsApi } from './logs.js';
+import { NetworkApi } from './network.js';
+import { PaddApi } from './padd.js';
+import { QueriesApi } from './queries.js';
+import { StatsApi } from './stats.js';
+import { TeleporterApi } from './teleporter.js';
 import { PiHoleClientCore } from './core.js';
-import { ClientsApi, DomainsApi, GroupsApi, ListsApi } from './management.js';
-import { DnsApi, HistoryApi, QueriesApi, StatsApi } from './metrics.js';
-import {
-  ActionsApi,
-  ConfigApi,
-  DhcpApi,
-  DocsApi,
-  InfoApi,
-  LogsApi,
-  NetworkApi,
-  PaddApi,
-  TeleporterApi,
-} from './system.js';
 import type { EndpointsResponse, PiHoleClientOptions } from '../types/index.js';
 
 /**
