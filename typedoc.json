@@ -14,5 +14,9 @@
   "disableSources": true,
   "hideBreadcrumbs": true,
   "hidePageHeader": true,
-  "useCodeBlocks": true
+  "useCodeBlocks": true,
+  "propertiesFormat": "table",
+  "parametersFormat": "table",
+  "indexFormat": "table",
+  "excludeInternal": true
 }
