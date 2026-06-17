@@ -1,30 +1,26 @@
-name: Publish
+name: Test
 
 on:
   push:
-    tags:
-      - 'v*'
-
-permissions:
-  id-token: write
-  contents: read
+    branches: [main]
+    tags-ignore: ['**']
+  pull_request:
+    branches: [main]
+  workflow_call:
+    inputs:
+      ref:
+        type: string
+        required: false
 
 jobs:
-  test:
-    uses: ./.github/workflows/test.yml
-    permissions:
-      contents: read
-    with:
-      ref: ${{ github.ref }}
-
-  publish:
-    needs: test
+  lint:
+    name: Lint
     runs-on: ubuntu-latest
-    permissions:
-      contents: read
-      id-token: write
     steps:
       - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
+        with:
+          ref: ${{ inputs.ref || github.ref }}
+          submodules: recursive
 
       - uses: pnpm/action-setup@0e279bb959325dab635dd2c09392533439d90093 # v6.0.8
 
@@ -35,6 +31,6 @@ jobs:
 
       - run: pnpm install --frozen-lockfile
 
-      - run: pnpm build
+      - run: pnpm lint
 
-      - run: pnpm publish --no-git-checks
+      - run: pnpm test

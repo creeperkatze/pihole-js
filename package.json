@@ -14,6 +14,8 @@
   ],
   "scripts": {
     "build": "tsc",
+    "lint": "eslint .",
+    "lint:fix": "eslint . --fix",
     "test": "node --import tsx/esm --test tests/**/*.test.ts",
     "test:coverage": "node --import tsx/esm --experimental-test-coverage --test tests/**/*.test.ts",
     "release:patch": "pnpm version patch && git push && git push --tags",
@@ -38,8 +40,12 @@
     "node": ">=18"
   },
   "devDependencies": {
+    "@eslint/js": "^10.0.1",
     "@types/node": "^25.9.3",
+    "eslint": "^10.5.0",
+    "globals": "^17.6.0",
     "tsx": "^4.20.6",
-    "typescript": "^5.9.3"
+    "typescript": "^5.9.3",
+    "typescript-eslint": "^8.61.1"
   }
 }

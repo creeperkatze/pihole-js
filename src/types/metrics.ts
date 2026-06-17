@@ -1,5 +1,5 @@
 import type { ApiResponseBase, JsonValue } from './base.js';
-import type { BlockingStatus, DomainSearchResult, PiholeGroup, PiholeList } from './resources.js';
+import type { BlockingStatus, PiholeGroup, PiholeList } from './resources.js';
 
 export interface HistoryPoint {
   timestamp: number;
