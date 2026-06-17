@@ -1,5 +1,4 @@
-import test from 'node:test';
-import assert from 'node:assert/strict';
+import { test, expect } from 'vitest';
 
 import {
   appendQuery,
@@ -13,12 +12,12 @@ import {
 } from '../../src/utils/request.ts';
 
 test('normalizeBaseUrl trims trailing slashes and strips /api suffix', () => {
-  assert.equal(normalizeBaseUrl('http://pi.hole/api/'), 'http://pi.hole');
-  assert.equal(normalizeBaseUrl('http://pi.hole/admin/'), 'http://pi.hole/admin');
+  expect(normalizeBaseUrl('http://pi.hole/api/')).toBe('http://pi.hole');
+  expect(normalizeBaseUrl('http://pi.hole/admin/')).toBe('http://pi.hole/admin');
 });
 
 test('normalizeBaseUrl rejects empty values', () => {
-  assert.throws(() => normalizeBaseUrl(''), /baseUrl must be a non-empty string/);
+  expect(() => normalizeBaseUrl('')).toThrow(/baseUrl must be a non-empty string/);
 });
 
 test('appendQuery skips nullish values and expands arrays', () => {
@@ -30,28 +29,28 @@ test('appendQuery skips nullish values and expands arrays', () => {
     enabled: true,
   });
 
-  assert.equal(url.toString(), 'http://pi.hole/api/stats?count=10&tags=a&tags=b&enabled=true');
+  expect(url.toString()).toBe('http://pi.hole/api/stats?count=10&tags=a&tags=b&enabled=true');
 });
 
 test('buildApiUrl trims leading slashes from the path', () => {
-  assert.equal(buildApiUrl('http://pi.hole', '/dns/blocking'), 'http://pi.hole/api/dns/blocking');
+  expect(buildApiUrl('http://pi.hole', '/dns/blocking')).toBe('http://pi.hole/api/dns/blocking');
 });
 
 test('isPlainObject only matches plain JSON-like objects', () => {
-  assert.equal(isPlainObject({ ok: true }), true);
-  assert.equal(isPlainObject(['nope']), false);
-  assert.equal(isPlainObject(new FormData()), false);
-  assert.equal(isPlainObject(new Blob(['x'])), false);
-  assert.equal(isPlainObject(null), false);
+  expect(isPlainObject({ ok: true })).toBe(true);
+  expect(isPlainObject(['nope'])).toBe(false);
+  expect(isPlainObject(new FormData())).toBe(false);
+  expect(isPlainObject(new Blob(['x']))).toBe(false);
+  expect(isPlainObject(null)).toBe(false);
 });
 
 test('isRawBody recognizes supported raw request bodies', () => {
-  assert.equal(isRawBody('text'), true);
-  assert.equal(isRawBody(new FormData()), true);
-  assert.equal(isRawBody(new URLSearchParams('a=1')), true);
-  assert.equal(isRawBody(new Blob(['x'])), true);
-  assert.equal(isRawBody(new Uint8Array([1, 2, 3])), true);
-  assert.equal(isRawBody({ nope: true }), false);
+  expect(isRawBody('text')).toBe(true);
+  expect(isRawBody(new FormData())).toBe(true);
+  expect(isRawBody(new URLSearchParams('a=1'))).toBe(true);
+  expect(isRawBody(new Blob(['x']))).toBe(true);
+  expect(isRawBody(new Uint8Array([1, 2, 3]))).toBe(true);
+  expect(isRawBody({ nope: true })).toBe(false);
 });
 
 test('withJsonBody JSON-encodes plain objects and sets content type', () => {
@@ -60,8 +59,8 @@ test('withJsonBody JSON-encodes plain objects and sets content type', () => {
     body: { enabled: true },
   });
 
-  assert.equal(request.body, JSON.stringify({ enabled: true }));
-  assert.equal(new Headers(request.headers).get('Content-Type'), 'application/json');
+  expect(request.body).toBe(JSON.stringify({ enabled: true }));
+  expect(new Headers(request.headers).get('Content-Type')).toBe('application/json');
 });
 
 test('withJsonBody keeps raw bodies unchanged and does not force JSON headers', () => {
@@ -71,14 +70,14 @@ test('withJsonBody keeps raw bodies unchanged and does not force JSON headers', 
     body,
   });
 
-  assert.equal(request.body, body);
-  assert.equal(new Headers(request.headers).has('Content-Type'), false);
+  expect(request.body).toBe(body);
+  expect(new Headers(request.headers).has('Content-Type')).toBe(false);
 });
 
 test('extractErrorMessage prefers nested API messages and falls back to HTTP status', () => {
-  assert.equal(extractErrorMessage({ error: { message: 'Denied' } }, 403), 'Denied');
-  assert.equal(extractErrorMessage({ message: 'Broken' }, 500), 'Broken');
-  assert.equal(extractErrorMessage({}, 404), 'HTTP 404');
+  expect(extractErrorMessage({ error: { message: 'Denied' } }, 403)).toBe('Denied');
+  expect(extractErrorMessage({ message: 'Broken' }, 500)).toBe('Broken');
+  expect(extractErrorMessage({}, 404)).toBe('HTTP 404');
 });
 
 test('parseErrorBody reads json responses', async () => {
@@ -88,7 +87,7 @@ test('parseErrorBody reads json responses', async () => {
     }),
   );
 
-  assert.deepEqual(body, { error: { message: 'Oops' } });
+  expect(body).toEqual({ error: { message: 'Oops' } });
 });
 
 test('parseErrorBody reads text responses', async () => {
@@ -98,5 +97,5 @@ test('parseErrorBody reads text responses', async () => {
     }),
   );
 
-  assert.equal(body, 'plain text');
+  expect(body).toBe('plain text');
 });

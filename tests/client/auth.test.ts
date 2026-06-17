@@ -1,5 +1,4 @@
-import test from 'node:test';
-import assert from 'node:assert/strict';
+import { test, expect } from 'vitest';
 
 import { createTestClient, TestSessionStore } from '../utils/client.ts';
 import { jsonResponse } from '../utils/http.ts';
@@ -12,9 +11,9 @@ test('checkAuth calls the unauthenticated auth endpoint', async () => {
 
   await client.auth.check();
 
-  assert.equal(String(fetch.calls[0].input), 'http://pi.hole/api/auth');
-  assert.equal(fetch.calls[0].init?.method ?? 'GET', 'GET');
-  assert.equal((fetch.calls[0].init?.headers as Headers).has('sid'), false);
+  expect(String(fetch.calls[0].input)).toBe('http://pi.hole/api/auth');
+  expect(fetch.calls[0].init?.method ?? 'GET').toBe('GET');
+  expect((fetch.calls[0].init?.headers as Headers).has('sid')).toBe(false);
 });
 
 test('login with credentials posts the password body to /auth', async () => {
@@ -25,9 +24,9 @@ test('login with credentials posts the password body to /auth', async () => {
 
   await client.auth.login({ password: 'secret' });
 
-  assert.equal(String(fetch.calls[0].input), 'http://pi.hole/api/auth');
-  assert.equal(fetch.calls[0].init?.method, 'POST');
-  assert.equal(fetch.calls[0].init?.body, JSON.stringify({ password: 'secret' }));
+  expect(String(fetch.calls[0].input)).toBe('http://pi.hole/api/auth');
+  expect(fetch.calls[0].init?.method).toBe('POST');
+  expect(fetch.calls[0].init?.body).toBe(JSON.stringify({ password: 'secret' }));
 });
 
 test('login without credentials reuses an existing session and fetches auth state', async () => {
@@ -42,9 +41,9 @@ test('login without credentials reuses an existing session and fetches auth stat
 
   await client.auth.login();
 
-  assert.equal(String(fetch.calls[0].input), 'http://pi.hole/api/auth');
-  assert.equal((fetch.calls[0].init?.headers as Headers).has('sid'), false);
-  assert.deepEqual(await store.get('http://pi.hole'), { sid: 'cached', expiresAt: store.entries.get('http://pi.hole')?.expiresAt });
+  expect(String(fetch.calls[0].input)).toBe('http://pi.hole/api/auth');
+  expect((fetch.calls[0].init?.headers as Headers).has('sid')).toBe(false);
+  expect(await store.get('http://pi.hole')).toEqual({ sid: 'cached', expiresAt: store.entries.get('http://pi.hole')?.expiresAt });
 });
 
 test('session management endpoints use the expected routes and methods', async () => {
@@ -67,12 +66,12 @@ test('session management endpoints use the expected routes and methods', async (
   await client.auth.createAppPassword();
   await client.auth.logout();
 
-  assert.equal(String(fetch.calls[0].input), 'http://pi.hole/api/auth/sessions');
-  assert.equal(String(fetch.calls[1].input), 'http://pi.hole/api/auth/totp');
-  assert.equal(String(fetch.calls[2].input), 'http://pi.hole/api/auth/session/123');
-  assert.equal(fetch.calls[2].init?.method, 'DELETE');
-  assert.equal(String(fetch.calls[3].input), 'http://pi.hole/api/auth/app');
-  assert.equal(String(fetch.calls[4].input), 'http://pi.hole/api/auth');
-  assert.equal(fetch.calls[4].init?.method, 'DELETE');
-  assert.deepEqual(sessionStore.deleted, ['http://pi.hole']);
+  expect(String(fetch.calls[0].input)).toBe('http://pi.hole/api/auth/sessions');
+  expect(String(fetch.calls[1].input)).toBe('http://pi.hole/api/auth/totp');
+  expect(String(fetch.calls[2].input)).toBe('http://pi.hole/api/auth/session/123');
+  expect(fetch.calls[2].init?.method).toBe('DELETE');
+  expect(String(fetch.calls[3].input)).toBe('http://pi.hole/api/auth/app');
+  expect(String(fetch.calls[4].input)).toBe('http://pi.hole/api/auth');
+  expect(fetch.calls[4].init?.method).toBe('DELETE');
+  expect(sessionStore.deleted).toEqual(['http://pi.hole']);
 });

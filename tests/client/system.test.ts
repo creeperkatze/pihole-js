@@ -1,5 +1,4 @@
-import test from 'node:test';
-import assert from 'node:assert/strict';
+import { test, expect } from 'vitest';
 
 import { createTestClient } from '../utils/client.ts';
 import { jsonResponse, textResponse } from '../utils/http.ts';
@@ -13,11 +12,11 @@ test('public info and docs endpoints skip session auth', async () => {
   await client.info.getLogin();
   await client.docs.getHtml();
 
-  assert.equal(String(fetch.calls[0].input), 'http://pi.hole/api/info/client');
-  assert.equal((fetch.calls[0].init?.headers as Headers).has('sid'), false);
-  assert.equal(String(fetch.calls[1].input), 'http://pi.hole/api/info/login');
-  assert.equal((fetch.calls[1].init?.headers as Headers).has('sid'), false);
-  assert.equal(String(fetch.calls[2].input), 'http://pi.hole/api/docs');
+  expect(String(fetch.calls[0].input)).toBe('http://pi.hole/api/info/client');
+  expect((fetch.calls[0].init?.headers as Headers).has('sid')).toBe(false);
+  expect(String(fetch.calls[1].input)).toBe('http://pi.hole/api/info/login');
+  expect((fetch.calls[1].init?.headers as Headers).has('sid')).toBe(false);
+  expect(String(fetch.calls[2].input)).toBe('http://pi.hole/api/docs');
 });
 
 test('message and config endpoints build the expected paths', async () => {
@@ -32,16 +31,16 @@ test('message and config endpoints build the expected paths', async () => {
   await client.config.addArrayItem('/dns/upstreams', '1.1.1.1', { restart: true });
   await client.config.deleteArrayItem('/dns/upstreams', '1.1.1.1', { restart: true });
 
-  assert.equal(String(fetch.calls[0].input), 'http://pi.hole/api/info/messages/count');
-  assert.equal(String(fetch.calls[1].input), 'http://pi.hole/api/info/messages/1%2Ctwo');
-  assert.equal(fetch.calls[1].init?.method, 'DELETE');
-  assert.equal(String(fetch.calls[2].input), 'http://pi.hole/api/config?restart=true');
-  assert.equal(fetch.calls[2].init?.method, 'PATCH');
-  assert.equal(String(fetch.calls[3].input), 'http://pi.hole/api/config/dns/upstreams?detailed=true');
-  assert.equal(String(fetch.calls[4].input), 'http://pi.hole/api/config/dns/upstreams/1.1.1.1?restart=true');
-  assert.equal(fetch.calls[4].init?.method, 'PUT');
-  assert.equal(String(fetch.calls[5].input), 'http://pi.hole/api/config/dns/upstreams/1.1.1.1?restart=true');
-  assert.equal(fetch.calls[5].init?.method, 'DELETE');
+  expect(String(fetch.calls[0].input)).toBe('http://pi.hole/api/info/messages/count');
+  expect(String(fetch.calls[1].input)).toBe('http://pi.hole/api/info/messages/1%2Ctwo');
+  expect(fetch.calls[1].init?.method).toBe('DELETE');
+  expect(String(fetch.calls[2].input)).toBe('http://pi.hole/api/config?restart=true');
+  expect(fetch.calls[2].init?.method).toBe('PATCH');
+  expect(String(fetch.calls[3].input)).toBe('http://pi.hole/api/config/dns/upstreams?detailed=true');
+  expect(String(fetch.calls[4].input)).toBe('http://pi.hole/api/config/dns/upstreams/1.1.1.1?restart=true');
+  expect(fetch.calls[4].init?.method).toBe('PUT');
+  expect(String(fetch.calls[5].input)).toBe('http://pi.hole/api/config/dns/upstreams/1.1.1.1?restart=true');
+  expect(fetch.calls[5].init?.method).toBe('DELETE');
 });
 
 test('network, action, and search endpoints shape requests correctly', async () => {
@@ -67,15 +66,15 @@ test('network, action, and search endpoints shape requests correctly', async () 
   await client.dhcp.deleteLease('192.168.1.2');
   await client.search.lookup('pi.hole/test', { partial: true, N: 10 });
 
-  assert.equal(String(fetch.calls[0].input), 'http://pi.hole/api/network/devices?max_devices=5');
-  assert.equal(String(fetch.calls[1].input), 'http://pi.hole/api/network/gateway?detailed=true');
-  assert.equal(String(fetch.calls[2].input), 'http://pi.hole/api/network/routes?detailed=true');
-  assert.equal(String(fetch.calls[3].input), 'http://pi.hole/api/network/interfaces?detailed=true');
-  assert.equal(String(fetch.calls[4].input), 'http://pi.hole/api/action/gravity?color=true');
-  assert.equal(fetch.calls[4].init?.method, 'POST');
-  assert.equal(String(fetch.calls[5].input), 'http://pi.hole/api/action/restartdns');
-  assert.equal(fetch.calls[5].init?.method, 'POST');
-  assert.equal(String(fetch.calls[6].input), 'http://pi.hole/api/dhcp/leases/192.168.1.2');
-  assert.equal(fetch.calls[6].init?.method, 'DELETE');
-  assert.equal(String(fetch.calls[7].input), 'http://pi.hole/api/search/pi.hole%2Ftest?partial=true&N=10');
+  expect(String(fetch.calls[0].input)).toBe('http://pi.hole/api/network/devices?max_devices=5');
+  expect(String(fetch.calls[1].input)).toBe('http://pi.hole/api/network/gateway?detailed=true');
+  expect(String(fetch.calls[2].input)).toBe('http://pi.hole/api/network/routes?detailed=true');
+  expect(String(fetch.calls[3].input)).toBe('http://pi.hole/api/network/interfaces?detailed=true');
+  expect(String(fetch.calls[4].input)).toBe('http://pi.hole/api/action/gravity?color=true');
+  expect(fetch.calls[4].init?.method).toBe('POST');
+  expect(String(fetch.calls[5].input)).toBe('http://pi.hole/api/action/restartdns');
+  expect(fetch.calls[5].init?.method).toBe('POST');
+  expect(String(fetch.calls[6].input)).toBe('http://pi.hole/api/dhcp/leases/192.168.1.2');
+  expect(fetch.calls[6].init?.method).toBe('DELETE');
+  expect(String(fetch.calls[7].input)).toBe('http://pi.hole/api/search/pi.hole%2Ftest?partial=true&N=10');
 });

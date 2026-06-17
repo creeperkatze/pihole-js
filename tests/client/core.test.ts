@@ -1,5 +1,4 @@
-import test from 'node:test';
-import assert from 'node:assert/strict';
+import { test, expect } from 'vitest';
 
 import { PiHoleClientCore } from '../../src/client/core.ts';
 import { PiHoleError } from '../../src/errors.ts';
@@ -83,17 +82,17 @@ test('requestJson authenticates with password, stores the session, and sends the
 
   const response = await client.json<{ status: string }>('stats/summary');
 
-  assert.deepEqual(response, { status: 'ok' });
-  assert.equal(fetch.calls.length, 2);
-  assert.equal(String(fetch.calls[0].input), 'http://pi.hole/api/auth');
-  assert.equal(fetch.calls[0].init?.method, 'POST');
-  assert.equal(fetch.calls[1].init?.headers instanceof Headers, true);
-  assert.equal((fetch.calls[1].init?.headers as Headers).get('sid'), 'sid-1');
-  assert.deepEqual(await store.get('http://pi.hole'), {
+  expect(response).toEqual({ status: 'ok' });
+  expect(fetch.calls.length).toBe(2);
+  expect(String(fetch.calls[0].input)).toBe('http://pi.hole/api/auth');
+  expect(fetch.calls[0].init?.method).toBe('POST');
+  expect(fetch.calls[1].init?.headers instanceof Headers).toBe(true);
+  expect((fetch.calls[1].init?.headers as Headers).get('sid')).toBe('sid-1');
+  expect(await store.get('http://pi.hole')).toEqual({
     sid: 'sid-1',
     expiresAt: store.entries.get('http://pi.hole')?.expiresAt,
   });
-  assert.ok((store.entries.get('http://pi.hole')?.expiresAt ?? 0) > Date.now());
+  expect((store.entries.get('http://pi.hole')?.expiresAt ?? 0) > Date.now()).toBe(true);
 });
 
 test('requestJson reuses a cached session without re-authenticating', async () => {
@@ -109,8 +108,8 @@ test('requestJson reuses a cached session without re-authenticating', async () =
 
   await client.json('stats/summary');
 
-  assert.equal(fetch.calls.length, 1);
-  assert.equal((fetch.calls[0].init?.headers as Headers).get('sid'), 'cached');
+  expect(fetch.calls.length).toBe(1);
+  expect((fetch.calls[0].init?.headers as Headers).get('sid')).toBe('cached');
 });
 
 test('requestJson validates an expired cached session before reusing it', async () => {
@@ -128,10 +127,10 @@ test('requestJson validates an expired cached session before reusing it', async 
 
   await client.json('stats/summary');
 
-  assert.equal(fetch.calls.length, 2);
-  assert.equal(String(fetch.calls[0].input), 'http://pi.hole/api/auth');
-  assert.equal((fetch.calls[0].init?.headers as Headers).get('sid'), 'stale');
-  assert.equal((fetch.calls[1].init?.headers as Headers).get('sid'), 'stale');
+  expect(fetch.calls.length).toBe(2);
+  expect(String(fetch.calls[0].input)).toBe('http://pi.hole/api/auth');
+  expect((fetch.calls[0].init?.headers as Headers).get('sid')).toBe('stale');
+  expect((fetch.calls[1].init?.headers as Headers).get('sid')).toBe('stale');
 });
 
 test('requestJson retries once with a fresh session after a 401 response', async () => {
@@ -151,11 +150,11 @@ test('requestJson retries once with a fresh session after a 401 response', async
 
   const response = await client.json<{ status: string }>('stats/summary');
 
-  assert.deepEqual(response, { status: 'ok' });
-  assert.equal(fetch.calls.length, 3);
-  assert.equal((fetch.calls[0].init?.headers as Headers).get('sid'), 'expired');
-  assert.equal((fetch.calls[2].init?.headers as Headers).get('sid'), 'fresh');
-  assert.deepEqual(store.deleted, ['http://pi.hole']);
+  expect(response).toEqual({ status: 'ok' });
+  expect(fetch.calls.length).toBe(3);
+  expect((fetch.calls[0].init?.headers as Headers).get('sid')).toBe('expired');
+  expect((fetch.calls[2].init?.headers as Headers).get('sid')).toBe('fresh');
+  expect(store.deleted).toEqual(['http://pi.hole']);
 });
 
 test('requestJson supports passwordless installs', async () => {
@@ -170,9 +169,9 @@ test('requestJson supports passwordless installs', async () => {
 
   await client.json('stats/summary');
 
-  assert.equal(fetch.calls.length, 2);
-  assert.equal(fetch.calls[0].init?.method ?? 'GET', 'GET');
-  assert.equal((fetch.calls[1].init?.headers as Headers).get('sid'), 'passwordless');
+  expect(fetch.calls.length).toBe(2);
+  expect(fetch.calls[0].init?.method ?? 'GET').toBe('GET');
+  expect((fetch.calls[1].init?.headers as Headers).get('sid')).toBe('passwordless');
 });
 
 test('requestJson throws a friendly error when a passwordless install actually requires a password', async () => {
@@ -182,12 +181,10 @@ test('requestJson throws a friendly error when a passwordless install actually r
     fetch,
   });
 
-  await assert.rejects(() => client.json('stats/summary'), (error: unknown) => {
-    assert.ok(error instanceof PiHoleError);
-    assert.equal(error.message, 'Password required');
-    assert.equal(error.code, 'PASSWORD_REQUIRED');
-    return true;
-  });
+  const error = await client.json('stats/summary').catch((e: unknown) => e);
+  expect(error).toBeInstanceOf(PiHoleError);
+  expect((error as PiHoleError).message).toBe('Password required');
+  expect((error as PiHoleError).code).toBe('PASSWORD_REQUIRED');
 });
 
 test('loginWithCredentials remaps a 401 into PASSWORD_INCORRECT', async () => {
@@ -198,12 +195,10 @@ test('loginWithCredentials remaps a 401 into PASSWORD_INCORRECT', async () => {
     fetch,
   });
 
-  await assert.rejects(() => client.json('stats/summary'), (error: unknown) => {
-    assert.ok(error instanceof PiHoleError);
-    assert.equal(error.message, 'Password incorrect');
-    assert.equal(error.code, 'PASSWORD_INCORRECT');
-    return true;
-  });
+  const error = await client.json('stats/summary').catch((e: unknown) => e);
+  expect(error).toBeInstanceOf(PiHoleError);
+  expect((error as PiHoleError).message).toBe('Password incorrect');
+  expect((error as PiHoleError).code).toBe('PASSWORD_INCORRECT');
 });
 
 test('requestText, requestArrayBuffer, and requestVoid use the right response parsers', async () => {
@@ -221,9 +216,9 @@ test('requestText, requestArrayBuffer, and requestVoid use the right response pa
   const buffer = await client.binary('teleporter', { auth: 'none' });
   const empty = await client.void('logout', { auth: 'none' });
 
-  assert.equal(docs, 'docs here');
-  assert.deepEqual(Array.from(new Uint8Array(buffer)), [1, 2, 3]);
-  assert.equal(empty, undefined);
+  expect(docs).toBe('docs here');
+  expect(Array.from(new Uint8Array(buffer))).toEqual([1, 2, 3]);
+  expect(empty).toBeUndefined();
 });
 
 test('requestJson appends query params and JSON-encodes object bodies', async () => {
@@ -241,10 +236,10 @@ test('requestJson appends query params and JSON-encodes object bodies', async ()
     body: { enabled: true },
   });
 
-  assert.equal(String(fetch.calls[0].input), 'http://pi.hole/api/groups?type=allow&ids=1&ids=2');
-  assert.equal(fetch.calls[0].init?.body, JSON.stringify({ enabled: true }));
-  assert.equal((fetch.calls[0].init?.headers as Headers).get('Content-Type'), 'application/json');
-  assert.equal((fetch.calls[0].init?.headers as Headers).get('User-Agent'), 'pihole-js-tests/1.0');
+  expect(String(fetch.calls[0].input)).toBe('http://pi.hole/api/groups?type=allow&ids=1&ids=2');
+  expect(fetch.calls[0].init?.body).toBe(JSON.stringify({ enabled: true }));
+  expect((fetch.calls[0].init?.headers as Headers).get('Content-Type')).toBe('application/json');
+  expect((fetch.calls[0].init?.headers as Headers).get('User-Agent')).toBe('pihole-js-tests/1.0');
 });
 
 test('requestJson forces the configured user agent over per-request headers', async () => {
@@ -262,7 +257,7 @@ test('requestJson forces the configured user agent over per-request headers', as
     },
   });
 
-  assert.equal((fetch.calls[0].init?.headers as Headers).get('User-Agent'), 'pihole-js-tests/1.0');
+  expect((fetch.calls[0].init?.headers as Headers).get('User-Agent')).toBe('pihole-js-tests/1.0');
 });
 
 test('logout clears the cached session entry', async () => {
@@ -277,7 +272,7 @@ test('logout clears the cached session entry', async () => {
 
   await client.logout();
 
-  assert.deepEqual(store.deleted, ['http://pi.hole']);
+  expect(store.deleted).toEqual(['http://pi.hole']);
 });
 
 test('requestJson turns aborted fetches into timeout errors', async () => {
@@ -287,19 +282,17 @@ test('requestJson turns aborted fetches into timeout errors', async () => {
     fetch: createMockFetch(abortingFetch()),
   });
 
-  await assert.rejects(() => client.json('docs', { auth: 'none' }), (error: unknown) => {
-    assert.ok(error instanceof PiHoleError);
-    assert.equal(error.message, 'Connection timed out');
-    assert.equal(error.status, 408);
-    assert.equal(error.code, 'TIMEOUT');
-    return true;
-  });
+  const error = await client.json('docs', { auth: 'none' }).catch((e: unknown) => e);
+  expect(error).toBeInstanceOf(PiHoleError);
+  expect((error as PiHoleError).message).toBe('Connection timed out');
+  expect((error as PiHoleError).status).toBe(408);
+  expect((error as PiHoleError).code).toBe('TIMEOUT');
 });
 
 test('requestJson uses a bound default fetch implementation', async () => {
   const originalFetch = globalThis.fetch;
   globalThis.fetch = function (this: typeof globalThis, _input: RequestInfo | URL, _init?: RequestInit) {
-    assert.equal(this, globalThis);
+    expect(this).toBe(globalThis);
     return Promise.resolve(jsonResponse({ ok: true }));
   } as typeof globalThis.fetch;
 
@@ -310,7 +303,7 @@ test('requestJson uses a bound default fetch implementation', async () => {
 
     const response = await client.json<{ ok: boolean }>('docs', { auth: 'none' });
 
-    assert.deepEqual(response, { ok: true });
+    expect(response).toEqual({ ok: true });
   } finally {
     globalThis.fetch = originalFetch;
   }
@@ -333,11 +326,9 @@ test('requestJson surfaces API error messages and metadata', async () => {
     fetch,
   });
 
-  await assert.rejects(() => client.json('docs', { auth: 'none' }), (error: unknown) => {
-    assert.ok(error instanceof PiHoleError);
-    assert.equal(error.message, 'Nope');
-    assert.equal(error.status, 403);
-    assert.equal(error.code, 'FORBIDDEN');
-    return true;
-  });
+  const error = await client.json('docs', { auth: 'none' }).catch((e: unknown) => e);
+  expect(error).toBeInstanceOf(PiHoleError);
+  expect((error as PiHoleError).message).toBe('Nope');
+  expect((error as PiHoleError).status).toBe(403);
+  expect((error as PiHoleError).code).toBe('FORBIDDEN');
 });

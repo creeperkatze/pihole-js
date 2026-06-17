@@ -20,8 +20,8 @@
     "docs:preview": "vitepress preview docs",
     "lint": "eslint .",
     "lint:fix": "eslint . --fix",
-    "test": "node --import tsx/esm --test tests/**/*.test.ts",
-    "test:coverage": "node --import tsx/esm --experimental-test-coverage --test tests/**/*.test.ts",
+    "test": "vitest run",
+    "test:coverage": "vitest run --coverage",
     "release:patch": "pnpm version patch && git push && git push --tags",
     "release:minor": "pnpm version minor && git push && git push --tags",
     "release:major": "pnpm version major && git push && git push --tags"
@@ -46,13 +46,14 @@
   "devDependencies": {
     "@eslint/js": "^10.0.1",
     "@types/node": "^25.9.3",
+    "@vitest/coverage-v8": "^2.1.9",
     "eslint": "^10.5.0",
     "globals": "^17.6.0",
-    "tsx": "^4.20.6",
     "typedoc": "^0.28.19",
     "typedoc-plugin-markdown": "^4.12.0",
     "typescript": "^5.9.3",
     "typescript-eslint": "^8.61.1",
-    "vitepress": "^1.6.4"
+    "vitepress": "^1.6.4",
+    "vitest": "^2.1.9"
   }
 }

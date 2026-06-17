@@ -1,8 +1,7 @@
-import test from 'node:test';
-import assert from 'node:assert/strict';
+import { test, expect } from 'vitest';
 
 import { encodeSegment } from '../../src/utils/domain.ts';
 
 test('encodeSegment encodes reserved path characters', () => {
-  assert.equal(encodeSegment('group/a b'), 'group%2Fa%20b');
+  expect(encodeSegment('group/a b')).toBe('group%2Fa%20b');
 });
