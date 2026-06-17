@@ -35,8 +35,8 @@ const client = new PiHoleClient({
   userAgent: 'my-app/1.0',
 });
 
-const summary = await client.metrics.getSummary();
-const blocking = await client.dns.getBlocking();
+const summary = await client.stats.getSummary();
+const blocking = await client.dns.getStatus();
 
 console.log(summary);
 console.log(blocking);
@@ -70,43 +70,112 @@ interface PiHoleClientOptions {
 
 ### Selected Methods
 
-Authentication:
+Auth:
 - `client.auth.check()`
 - `client.auth.login(credentials?)`
 - `client.auth.logout()`
 - `client.auth.getSessions()`
 
-Metrics:
-- `client.metrics.getSummary()`
-- `client.metrics.getTopDomains()`
-- `client.metrics.getDatabaseTopDomains(options)`
-- `client.metrics.getTopClients()`
-- `client.metrics.getQueries()`
-- `client.metrics.getHistory()`
-- `client.dns.getBlocking()`
-- `client.dns.setBlocking(blocking, timer?)`
+Stats:
+- `client.stats.getSummary()`
+- `client.stats.getTopDomains(options?)`
+- `client.stats.getDatabaseTopDomains(options)`
+- `client.stats.getTopClients(options?)`
+- `client.stats.getRecentBlocked(count?)`
+- `client.stats.getDatabaseSummary(options)`
 
-Management:
+History:
+- `client.history.get()`
+- `client.history.getClients(options?)`
+- `client.history.getDatabase(options)`
+- `client.history.getDatabaseClients(options)`
+
+Queries:
+- `client.queries.list(options?)`
+- `client.queries.getSuggestions()`
+
+DNS:
+- `client.dns.getStatus()`
+- `client.dns.setBlocking(blocking, timer?)`
+- `client.dns.enable()`
+- `client.dns.disable(seconds?)`
+
+Domains:
 - `client.domains.list()`
 - `client.domains.create(type, kind, payload)`
-- `client.domains.replace(type, kind, domain, payload)`
+- `client.domains.update(type, kind, domain, payload)`
 - `client.domains.delete(type, kind, domain)`
-- `client.groups.list()`
-- `client.clients.list()`
-- `client.lists.list()`
+- `client.domains.allow(domain, comment?)`
+- `client.domains.deny(domain, comment?)`
+- `client.domains.search(domain, options?)`
 
-System:
-- `client.config.get()`
+Groups:
+- `client.groups.list()`
+- `client.groups.get(name)`
+- `client.groups.create(payload)`
+- `client.groups.update(name, payload)`
+- `client.groups.delete(name)`
+
+Clients:
+- `client.clients.list()`
+- `client.clients.get(client)`
+- `client.clients.create(payload)`
+- `client.clients.update(client, payload)`
+- `client.clients.delete(client)`
+- `client.clients.getSuggestions()`
+
+Lists:
+- `client.lists.list(options?)`
+- `client.lists.get(address, options?)`
+- `client.lists.create(type, payload)`
+- `client.lists.update(address, payload)`
+- `client.lists.delete(address, type)`
+
+Config:
+- `client.config.get(options?)`
 - `client.config.patch(config, options?)`
+- `client.config.getSection(element, options?)`
+- `client.config.addArrayItem(element, value, options?)`
+- `client.config.removeArrayItem(element, value, options?)`
+
+Network:
 - `client.network.getDevices(options?)`
+- `client.network.deleteDevice(deviceId)`
 - `client.network.getGateway(options?)`
+- `client.network.getRoutes(options?)`
+- `client.network.getInterfaces(options?)`
+
+Info:
+- `client.info.getSystem()`
+- `client.info.getVersion()`
+- `client.info.getMessages()`
+- `client.info.getMessagesCount()`
+- `client.info.deleteMessage(id)`
+
+Logs:
+- `client.logs.getDnsmasq(options?)`
+- `client.logs.getFtl(options?)`
+- `client.logs.getWebserver(options?)`
+
+Teleporter:
 - `client.teleporter.export()`
 - `client.teleporter.import(archive, selection?)`
-- `client.actions.runGravity(options?)`
+
+Actions:
+- `client.actions.updateGravity(options?)`
 - `client.actions.restartDns()`
 - `client.actions.flushLogs()`
+- `client.actions.flushArp()`
+- `client.actions.flushNetwork()`
+
+DHCP:
 - `client.dhcp.getLeases()`
-- `client.search.lookup(domain, options?)`
+- `client.dhcp.deleteLease(ip)`
+
+Docs:
+- `client.docs.getHtml()`
+
+PADD:
 - `client.padd.getSummary()`
 
 ## 🔐 Authentication
@@ -119,7 +188,7 @@ const client = new PiHoleClient({
   password: 'secret',
 });
 
-await client.metrics.getSummary();
+await client.stats.getSummary();
 ```
 
 For passwordless installs, omit the password:
@@ -176,7 +245,7 @@ const client = new PiHoleClient({
 });
 
 try {
-  await client.metrics.getSummary();
+  await client.stats.getSummary();
 } catch (error) {
   if (error instanceof PiHoleError) {
     console.error(error.status);
