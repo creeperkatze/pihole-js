@@ -4,12 +4,12 @@
 
 ::: code-group
 
-```sh [pnpm]
-pnpm add pihole-js
-```
-
 ```sh [npm]
 npm install pihole-js
+```
+
+```sh [pnpm]
+pnpm add pihole-js
 ```
 
 ```sh [yarn]

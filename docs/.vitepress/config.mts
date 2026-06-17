@@ -1,6 +1,8 @@
 import fs from 'node:fs';
 import path from 'node:path';
 
+import tailwindcss from '@tailwindcss/vite';
+import svgLoader from 'vite-svg-loader';
 import { defineConfig } from 'vitepress';
 import { version } from '../../package.json';
 
@@ -66,6 +68,9 @@ const apiSidebar = [
 const base = normalizeBase(process.env.DOCS_BASE ?? '/');
 
 export default defineConfig({
+  vite: {
+    plugins: [tailwindcss(), svgLoader()],
+  },
   title: 'pihole-js',
   description: 'A framework-agnostic JavaScript client for the Pi-hole v6 API.',
   base,
