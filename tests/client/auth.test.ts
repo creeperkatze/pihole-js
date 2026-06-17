@@ -61,7 +61,7 @@ test('session management endpoints use the expected routes and methods', async (
   });
 
   await client.auth.getSessions();
-  await client.auth.getTotp();
+  await client.auth.generateTotp();
   await client.auth.deleteSession(123);
   await client.auth.createAppPassword();
   await client.auth.logout();

@@ -79,7 +79,6 @@ export default defineConfig({
     nav: [
       { text: 'Guide', link: '/guide/getting-started' },
       { text: 'API', link: '/api/' },
-      { text: 'GitHub', link: 'https://github.com/creeperkatze/pihole-js' },
       {
         text: `v${version}`,
         items: [
