@@ -116,6 +116,10 @@ export default defineConfig({
         ...apiSidebar,
       ],
     },
+    editLink: {
+      pattern: 'https://github.com/creeperkatze/pihole-js/edit/main/docs/:path',
+    },
+    lastUpdated: {},
     socialLinks: [{ icon: 'github', link: 'https://github.com/creeperkatze/pihole-js' }],
     search: {
       provider: 'local',
