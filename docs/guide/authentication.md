@@ -35,7 +35,7 @@ The client will:
 
 ## Related methods
 
-- `client.auth.check()`
-- `client.auth.login(credentials?)`
-- `client.auth.logout()`
-- `client.auth.getSessions()`
+- [`client.auth.check()`](/api/classes/AuthApi#check)
+- [`client.auth.login(credentials?)`](/api/classes/AuthApi#login)
+- [`client.auth.logout()`](/api/classes/AuthApi#logout)
+- [`client.auth.getSessions()`](/api/classes/AuthApi#getsessions)
