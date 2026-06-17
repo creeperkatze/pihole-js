@@ -2,6 +2,7 @@ import fs from 'node:fs';
 import path from 'node:path';
 
 import { defineConfig } from 'vitepress';
+import { version } from '../../package.json';
 
 function normalizeBase(base: string): string {
   if (!base) return '/';
@@ -74,6 +75,12 @@ export default defineConfig({
       { text: 'Guide', link: '/guide/getting-started' },
       { text: 'API', link: '/api/' },
       { text: 'GitHub', link: 'https://github.com/creeperkatze/pihole-js' },
+      {
+        text: `v${version}`,
+        items: [
+          { text: 'Changelog', link: 'https://github.com/creeperkatze/pihole-js/releases' },
+        ],
+      },
     ],
     sidebar: {
       '/guide/': [
