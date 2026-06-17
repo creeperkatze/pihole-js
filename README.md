@@ -39,7 +39,7 @@ console.log(blocking);
 
 ## 📚 Documentation
 
-The docs can be found [here](https://docs.creeperkatze.dev/pihole-js/).
+The docs can be found [here](https://pihole-js.creeperkatze.dev).
 
 ## 📖 API
 

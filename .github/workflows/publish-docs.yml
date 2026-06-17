@@ -53,8 +53,6 @@ jobs:
                   context: .
                   file: Dockerfile.docs
                   push: true
-                  build-args: |
-                      DOCS_BASE=/pihole-js/
                   tags: ${{ steps.docker_meta.outputs.tags }}
                   labels: ${{ steps.docker_meta.outputs.labels }}
                   cache-from: type=registry,ref=ghcr.io/creeperkatze/pihole-js-docs:main
