@@ -1,0 +1,97 @@
+import fs from 'node:fs';
+import path from 'node:path';
+
+import { defineConfig } from 'vitepress';
+
+interface SidebarItem {
+  text: string;
+  link: string;
+}
+
+function titleFromSlug(slug: string): string {
+  return slug
+    .replace(/[-_]/g, ' ')
+    .replace(/\b\w/g, (char) => char.toUpperCase());
+}
+
+function readApiItems(section: string): SidebarItem[] {
+  const sectionDir = path.resolve(process.cwd(), 'docs', 'api', section);
+  if (!fs.existsSync(sectionDir)) {
+    return [];
+  }
+
+  return fs
+    .readdirSync(sectionDir)
+    .filter((file) => file.endsWith('.md'))
+    .sort((a, b) => a.localeCompare(b))
+    .map((file) => {
+      const slug = file.replace(/\.md$/, '');
+      return {
+        text: titleFromSlug(slug),
+        link: `/api/${section}/${slug}`,
+      };
+    });
+}
+
+const apiSidebar = [
+  {
+    text: 'API Reference',
+    items: [{ text: 'Overview', link: '/api/' }],
+  },
+  {
+    text: 'Classes',
+    collapsed: false,
+    items: readApiItems('classes'),
+  },
+  {
+    text: 'Interfaces',
+    collapsed: true,
+    items: readApiItems('interfaces'),
+  },
+  {
+    text: 'Type Aliases',
+    collapsed: true,
+    items: readApiItems('type-aliases'),
+  },
+];
+
+export default defineConfig({
+  title: 'pihole-js',
+  description: 'A framework-agnostic JavaScript client for the Pi-hole v6 API.',
+  cleanUrls: true,
+  themeConfig: {
+    nav: [
+      { text: 'Guide', link: '/guide/getting-started' },
+      { text: 'API', link: '/api/' },
+      { text: 'GitHub', link: 'https://github.com/creeperkatze/pihole-js' },
+    ],
+    sidebar: {
+      '/guide/': [
+        {
+          text: 'Guide',
+          items: [
+            { text: 'Getting Started', link: '/guide/getting-started' },
+            { text: 'Authentication', link: '/guide/authentication' },
+            { text: 'Sessions and Fetch', link: '/guide/sessions-and-fetch' },
+          ],
+        },
+      ],
+      '/api/': apiSidebar,
+      '/': [
+        {
+          text: 'Guide',
+          items: [
+            { text: 'Getting Started', link: '/guide/getting-started' },
+            { text: 'Authentication', link: '/guide/authentication' },
+            { text: 'Sessions and Fetch', link: '/guide/sessions-and-fetch' },
+          ],
+        },
+        ...apiSidebar,
+      ],
+    },
+    socialLinks: [{ icon: 'github', link: 'https://github.com/creeperkatze/pihole-js' }],
+    search: {
+      provider: 'local',
+    },
+  },
+});

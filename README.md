@@ -1,4 +1,5 @@
 # pihole-js
+
 A framework-agnostic JavaScript client for the Pi-hole v6 API.
 
 ![GitHub Branch Check Runs](https://img.shields.io/github/check-runs/creeperkatze/pihole-js/main?labelColor=0d143c)
@@ -32,7 +33,6 @@ const blocking = await client.getBlocking();
 console.log(summary);
 console.log(blocking);
 ```
-
 
 ## 📖 API
 
@@ -154,6 +154,21 @@ const client = new PiHoleClient({
 });
 ```
 
+## 📚 Documentation
+
+Project documentation now lives in `docs/`:
+
+- guides are written with VitePress
+- API reference pages are generated with TypeDoc
+
+Useful commands:
+
+```sh
+pnpm docs:api
+pnpm docs:dev
+pnpm docs:build
+```
+
 ## ⚠️ Error Handling
 
 All request, authentication, timeout, and API errors are thrown as `PiHoleError`.
@@ -183,10 +198,6 @@ try {
 pnpm test
 pnpm test:coverage
 pnpm build
-if (error instanceof PiHoleError) {
-    console.error(error.status, error.message);
-  }
-}
 ```
 
 ## 📜 License

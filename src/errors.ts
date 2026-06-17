@@ -1,3 +1,6 @@
+/**
+ * Error thrown for request failures, authentication failures, timeouts, and Pi-hole API errors.
+ */
 export class PiHoleError extends Error {
   override name = 'PiHoleError' as const;
   status: number;

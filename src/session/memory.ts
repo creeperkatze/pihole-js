@@ -1,5 +1,10 @@
 import type { SessionEntry, SessionStore } from '../types/index.js';
 
+/**
+ * In-memory implementation of {@link SessionStore}.
+ *
+ * Each client instance gets its own store by default unless one is provided explicitly.
+ */
 export class MemorySessionStore implements SessionStore {
   readonly #store = new Map<string, SessionEntry>();
 
