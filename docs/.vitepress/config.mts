@@ -1,16 +1,18 @@
-import fs from 'node:fs';
-import path from 'node:path';
+import fs from "node:fs";
+import path from "node:path";
 
-import tailwindcss from '@tailwindcss/vite';
-import svgLoader from 'vite-svg-loader';
-import { defineConfig } from 'vitepress';
-import { version } from '../../package.json';
+import tailwindcss from "@tailwindcss/vite";
+import svgLoader from "vite-svg-loader";
+import { defineConfig } from "vitepress";
+import { version } from "../../package.json";
 
 function normalizeBase(base: string): string {
-  if (!base) return '/';
+  if (!base) return "/";
 
-  const withLeadingSlash = base.startsWith('/') ? base : `/${base}`;
-  return withLeadingSlash.endsWith('/') ? withLeadingSlash : `${withLeadingSlash}/`;
+  const withLeadingSlash = base.startsWith("/") ? base : `/${base}`;
+  return withLeadingSlash.endsWith("/")
+    ? withLeadingSlash
+    : `${withLeadingSlash}/`;
 }
 
 interface SidebarItem {
@@ -20,22 +22,22 @@ interface SidebarItem {
 
 function titleFromSlug(slug: string): string {
   return slug
-    .replace(/[-_]/g, ' ')
+    .replace(/[-_]/g, " ")
     .replace(/\b\w/g, (char) => char.toUpperCase());
 }
 
 function readApiItems(section: string): SidebarItem[] {
-  const sectionDir = path.resolve(process.cwd(), 'docs', 'api', section);
+  const sectionDir = path.resolve(process.cwd(), "docs", "api", section);
   if (!fs.existsSync(sectionDir)) {
     return [];
   }
 
   return fs
     .readdirSync(sectionDir)
-    .filter((file) => file.endsWith('.md'))
+    .filter((file) => file.endsWith(".md"))
     .sort((a, b) => a.localeCompare(b))
     .map((file) => {
-      const slug = file.replace(/\.md$/, '');
+      const slug = file.replace(/\.md$/, "");
       return {
         text: titleFromSlug(slug),
         link: `/api/${section}/${slug}`,
@@ -45,84 +47,89 @@ function readApiItems(section: string): SidebarItem[] {
 
 const apiSidebar = [
   {
-    text: 'API Reference',
-    items: [{ text: 'Overview', link: '/api/' }],
+    text: "API Reference",
+    items: [{ text: "Overview", link: "/api/" }],
   },
   {
-    text: 'Classes',
+    text: "Classes",
     collapsed: false,
-    items: readApiItems('classes'),
+    items: readApiItems("classes"),
   },
   {
-    text: 'Interfaces',
+    text: "Interfaces",
     collapsed: true,
-    items: readApiItems('interfaces'),
+    items: readApiItems("interfaces"),
   },
   {
-    text: 'Type Aliases',
+    text: "Type Aliases",
     collapsed: true,
-    items: readApiItems('type-aliases'),
+    items: readApiItems("type-aliases"),
   },
 ];
 
-const base = normalizeBase(process.env.DOCS_BASE ?? '/');
+const base = normalizeBase(process.env.DOCS_BASE ?? "/");
 
 export default defineConfig({
   vite: {
     plugins: [tailwindcss(), svgLoader()],
   },
-  title: 'pihole-js',
-  description: 'A framework-agnostic JavaScript client for the Pi-hole v6 API.',
+  title: "pihole-js",
+  description: "A framework-agnostic JavaScript client for the Pi-hole v6 API.",
   base,
   cleanUrls: true,
   themeConfig: {
     nav: [
-      { text: 'Guide', link: '/guide/getting-started' },
-      { text: 'API', link: '/api/' },
+      { text: "Guide", link: "/guide/getting-started" },
+      { text: "API", link: "/api/" },
       {
         text: `v${version}`,
         items: [
-          { text: 'Changelog', link: 'https://github.com/creeperkatze/pihole-js/releases' },
+          {
+            text: "Changelog",
+            link: "https://github.com/creeperkatze/pihole-js/releases",
+          },
         ],
       },
     ],
     sidebar: {
-      '/guide/': [
+      "/guide/": [
         {
-          text: 'Guide',
+          text: "Guide",
           items: [
-            { text: 'Getting Started', link: '/guide/getting-started' },
-            { text: 'Authentication', link: '/guide/authentication' },
-            { text: 'Sessions and Fetch', link: '/guide/sessions-and-fetch' },
-            { text: 'Error Handling', link: '/guide/error-handling' },
-            { text: 'Blocking', link: '/guide/blocking' },
-            { text: 'Domain Management', link: '/guide/domain-management' },
+            { text: "Getting Started", link: "/guide/getting-started" },
+            { text: "Authentication", link: "/guide/authentication" },
+            { text: "Sessions and Fetch", link: "/guide/sessions-and-fetch" },
+            { text: "Error Handling", link: "/guide/error-handling" },
+            { text: "Blocking", link: "/guide/blocking" },
+            { text: "Domain Management", link: "/guide/domain-management" },
           ],
         },
       ],
-      '/api/': apiSidebar,
-      '/': [
+      "/api/": apiSidebar,
+      "/": [
         {
-          text: 'Guide',
+          text: "Guide",
           items: [
-            { text: 'Getting Started', link: '/guide/getting-started' },
-            { text: 'Authentication', link: '/guide/authentication' },
-            { text: 'Sessions and Fetch', link: '/guide/sessions-and-fetch' },
-            { text: 'Error Handling', link: '/guide/error-handling' },
-            { text: 'Blocking', link: '/guide/blocking' },
-            { text: 'Domain Management', link: '/guide/domain-management' },
+            { text: "Getting Started", link: "/guide/getting-started" },
+            { text: "Authentication", link: "/guide/authentication" },
+            { text: "Sessions and Fetch", link: "/guide/sessions-and-fetch" },
+            { text: "Error Handling", link: "/guide/error-handling" },
+            { text: "Blocking", link: "/guide/blocking" },
+            { text: "Domain Management", link: "/guide/domain-management" },
           ],
         },
         ...apiSidebar,
       ],
     },
-    editLink: {
-      pattern: 'https://github.com/creeperkatze/pihole-js/edit/main/docs/:path',
-    },
     lastUpdated: {},
-    socialLinks: [{ icon: 'github', link: 'https://github.com/creeperkatze/pihole-js' }],
+    editLink: {
+      pattern: "https://github.com/creeperkatze/pihole-js/edit/main/docs/:path",
+    },
+    socialLinks: [
+      { icon: "github", link: "https://github.com/creeperkatze/pihole-js" },
+    ],
     search: {
-      provider: 'local',
+      provider: "local",
     },
   },
 });
