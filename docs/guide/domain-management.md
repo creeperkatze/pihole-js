@@ -1,8 +1,8 @@
 # Domain Management
 
-`client.domains` manages Pi-hole's allow and deny lists.
+Manage the allow and deny lists.
 
-## Allow and deny
+## Simple rules
 
 ```ts
 // Add or remove allow rule
@@ -12,12 +12,6 @@ await client.domains.unallow('safe.example.com');
 // Add or remove deny rule
 await client.domains.deny('ads.example.com');
 await client.domains.undeny('ads.example.com');
-```
-
-An optional comment can be added to any entry:
-
-```ts
-await client.domains.deny('tracker.example.com', 'Known tracker');
 ```
 
 ## Regex rules
@@ -30,6 +24,12 @@ await client.domains.unallowRegex('^safe\\..*\\.com$');
 // Add or remove deny rule for regex
 await client.domains.denyRegex('^ads?\\..*');
 await client.domains.undenyRegex('^ads?\\..*');
+```
+
+An optional comment can be added to any entry:
+
+```ts
+await client.domains.deny('tracker.example.com', 'Known tracker');
 ```
 
 ## Read the lists
@@ -74,7 +74,7 @@ await client.domains.batchDelete([
 ]);
 ```
 
-## Generic CRUD
+## Advanced
 
 The convenience methods above cover most cases. For full control over type and kind:
 

@@ -1,6 +1,6 @@
-# DNS Blocking
+# Blocking
 
-Control Pi-hole's blocking state with `client.dns`.
+Control the blocking state.
 
 ## Check the current status
 
@@ -27,12 +27,12 @@ Pass a number of seconds to re-enable blocking automatically after that duration
 await client.dns.disable(300);
 ```
 
-## Full control
+## Advanced
 
 `setBlocking` is the underlying method used by `enable` and `disable`:
 
 ```ts
 await client.dns.setBlocking(false, 600); // disable for 10 minutes
-await client.dns.setBlocking(true);        // enable (clears any timer)
+await client.dns.setBlocking(true); // enable (clears any timer)
 await client.dns.setBlocking(false, null); // disable indefinitely
 ```

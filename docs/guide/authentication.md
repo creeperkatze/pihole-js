@@ -1,6 +1,6 @@
 # Authentication
 
-`pihole-js` automatically manages Pi-hole sessions for you.
+Pi-hole sessions are automatically handled for you by default.
 
 ## Password-protected installs
 
