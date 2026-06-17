@@ -8,6 +8,7 @@ A framework-agnostic JavaScript client for the Pi-hole v6 API.
 ![GitHub Issues](https://img.shields.io/github/issues/creeperkatze/pihole-js?labelColor=0d143c)
 ![GitHub Pull Requests](https://img.shields.io/github/issues-pr/creeperkatze/pihole-js?labelColor=0d143c)
 ![GitHub Repo stars](https://img.shields.io/github/stars/creeperkatze/pihole-js?style=flat&labelColor=0d143c)
+![Codecov](https://img.shields.io/codecov/c/github/creeperkatze/pihole-js?labelColor=0d143c)
 
 ## 📦 Installation
 
