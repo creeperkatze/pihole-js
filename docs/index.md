@@ -3,7 +3,7 @@ layout: home
 
 hero:
   name: pihole-js
-  tagline: A framework-agnostic JavaScript client for the Pi-hole v6 API.
+  tagline: A framework-agnostic JavaScript client for the Pi-hole API .
   actions:
     - theme: brand
       text: Getting Started
