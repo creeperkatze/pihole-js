@@ -267,9 +267,14 @@ try {
 pnpm build
 
 pnpm test
-pnpm test:coverage
 ```
+
+## 🤝 Contributing
+
+Contributions are always welcome!
+
+Please ensure you run `pnpm lint:fix` before opening a pull request.
 
 ## 📜 License
 
-AGPL-3.0-only
+AGPL-3.0
