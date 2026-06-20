@@ -4,8 +4,8 @@ A framework-agnostic JavaScript client for the Pi-hole API.
 
 [![NPM Version](https://img.shields.io/npm/v/pihole-js)](https://www.npmjs.com/package/pihole-js)
 [![NPM Downloads](https://img.shields.io/npm/dt/pihole-js)](https://www.npmjs.com/package/pihole-js)
-![Codecov](https://img.shields.io/codecov/c/github/creeperkatze/pihole-js)
 ![GitHub Branch Check Runs](https://img.shields.io/github/check-runs/creeperkatze/pihole-js/main)
+![Codecov](https://img.shields.io/codecov/c/github/creeperkatze/pihole-js)
 ![GitHub Issues](https://img.shields.io/github/issues/creeperkatze/pihole-js)
 ![GitHub Pull Requests](https://img.shields.io/github/issues-pr/creeperkatze/pihole-js)
 ![GitHub Repo stars](https://img.shields.io/github/stars/creeperkatze/pihole-js?style=flat)
