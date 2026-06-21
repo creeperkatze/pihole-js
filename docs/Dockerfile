@@ -16,5 +16,5 @@ RUN pnpm docs:build
 
 FROM caddy:alpine
 
-COPY Caddyfile /etc/caddy/Caddyfile
+COPY docs/Caddyfile /etc/caddy/Caddyfile
 COPY --from=build /app/docs/.vitepress/dist/ /srv/
