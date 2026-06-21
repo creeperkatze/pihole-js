@@ -127,6 +127,7 @@ export default defineConfig({
     },
     socialLinks: [
       { icon: "github", link: "https://github.com/creeperkatze/pihole-js" },
+      { icon: "npm", link: "https://www.npmjs.com/package/pihole-js" },
     ],
     search: {
       provider: "local",

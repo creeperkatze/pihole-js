@@ -14,6 +14,9 @@ hero:
     - theme: alt
       text: GitHub
       link: https://github.com/creeperkatze/pihole-js
+    - theme: alt
+      text: Npm
+      link: https://www.npmjs.com/package/pihole-js
 
 features:
   - title: Built-in auth
