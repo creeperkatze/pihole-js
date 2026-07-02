@@ -12,7 +12,7 @@ A framework-agnostic JavaScript client for the Pi-hole API.
 
 [📚 Docs](https://pihole-js.creeperkatze.dev/) •
 [🚀 Getting Started](https://pihole-js.creeperkatze.dev/guide/getting-started) •
-[📖 API Reference](https://pihole-js.creeperkatze.dev/api/) •
+[📖 API Reference](https://pihole-js.creeperkatze.dev/api) •
 [📝 Changelog](https://github.com/creeperkatze/pihole-js/releases)
 
 ## 📦 Installation
