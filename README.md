@@ -1,6 +1,6 @@
 # pihole-js
 
-A framework-agnostic JavaScript client for the Pi-hole API.
+A framework-agnostic fully typed JavaScript client for the Pi-hole API.
 
 [![NPM Version](https://img.shields.io/npm/v/pihole-js)](https://www.npmjs.com/package/pihole-js)
 [![NPM Downloads](https://img.shields.io/npm/dt/pihole-js)](https://www.npmjs.com/package/pihole-js)

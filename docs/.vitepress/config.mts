@@ -74,7 +74,7 @@ export default defineConfig({
     plugins: [tailwindcss(), svgLoader()],
   },
   title: "pihole-js",
-  description: "A framework-agnostic JavaScript client for the Pi-hole API.",
+  description: "A framework-agnostic fully typed JavaScript client for the Pi-hole API.",
   base,
   cleanUrls: true,
   themeConfig: {

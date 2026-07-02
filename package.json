@@ -1,7 +1,7 @@
 {
   "name": "pihole-js",
   "version": "1.4.1",
-  "description": "Framework-agnostic JavaScript API client for Pi-hole v6",
+  "description": "A framework-agnostic fully typed JavaScript client for the Pi-hole API",
   "type": "module",
   "exports": {
     ".": {
