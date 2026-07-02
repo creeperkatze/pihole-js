@@ -15,7 +15,7 @@ hero:
       text: GitHub
       link: https://github.com/creeperkatze/pihole-js
     - theme: alt
-      text: Npm
+      text: npm
       link: https://www.npmjs.com/package/pihole-js
 
 features:
