@@ -1,7 +1,7 @@
 :root {
-  --vp-c-brand-1: #c62828;
-  --vp-c-brand-2: #e53935;
-  --vp-c-brand-3: #ef5350;
+  --vp-c-brand-1: #9c1f1f;
+  --vp-c-brand-2: #b12424;
+  --vp-c-brand-3: #c62828;
   --vp-c-brand-soft: #c6282824;
   --vp-c-brand-bg: var(--vp-c-brand-3);
   --vp-c-brand-hover: var(--vp-c-brand-2);
@@ -9,10 +9,10 @@
 }
 
 .dark {
-  --vp-c-brand-1: #ef5350;
-  --vp-c-brand-2: #e57373;
-  --vp-c-brand-3: #ef9a9a;
-  --vp-c-brand-soft: #ef53502e;
+  --vp-c-brand-1: #e27272;
+  --vp-c-brand-2: #da4747;
+  --vp-c-brand-3: #b12424;
+  --vp-c-brand-soft: #c628282e;
   --vp-c-brand-bg: var(--vp-c-brand-3);
   --vp-c-brand-hover: var(--vp-c-brand-2);
   --vp-c-brand-active: var(--vp-c-brand-1);
