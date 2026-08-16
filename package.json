@@ -1,6 +1,6 @@
 {
   "name": "pihole-js",
-  "version": "1.4.3",
+  "version": "1.4.4",
   "description": "A framework-agnostic fully typed JavaScript client for the Pi-hole API",
   "homepage": "https://pihole-js.creeperkatze.dev",
   "type": "module",
