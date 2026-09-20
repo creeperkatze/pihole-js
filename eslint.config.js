@@ -4,7 +4,7 @@ import tseslint from 'typescript-eslint';
 
 export default tseslint.config(
   {
-    ignores: ['dist/**', 'node_modules/**', 'docs/.vitepress/.temp/**', 'docs/.vitepress/cache/**', 'docs/.vitepress/dist/**', 'docs/api/**'],
+    ignores: ['dist/**', 'node_modules/**', 'website/.vitepress/.temp/**', 'website/.vitepress/cache/**', 'website/.vitepress/dist/**', 'website/api/**'],
   },
   eslint.configs.recommended,
   ...tseslint.configs.recommended,
