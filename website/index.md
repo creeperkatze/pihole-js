@@ -27,3 +27,15 @@ features:
     details: Ships with TypeScript types and generated API reference from the public package surface.
 ---
 
+<div class="home-section">
+
+## Projects
+
+Apps, extensions, and tools built on top of pihole-js. Browse what others have made below.
+
+<ProjectsGrid />
+
+[Add yours to the list](https://github.com/creeperkatze/pihole-js/edit/main/website/projects.json) by opening a PR.
+
+</div>
+

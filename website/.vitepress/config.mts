@@ -80,6 +80,7 @@ export default defineConfig({
     nav: [
       { text: "Guide", link: "/guide/getting-started" },
       { text: "API", link: "/api/" },
+      { text: "Projects", link: "/#projects" },
       {
         text: `v${version}`,
         items: [
