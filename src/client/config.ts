@@ -3,7 +3,6 @@ import type {
   ConfigMutationOptions,
   ConfigQueryOptions,
   ConfigResponse,
-  GenericApiResponse,
 } from '../types/index.js';
 import { encodeSegment } from '../utils/domain.js';
 
@@ -26,8 +25,8 @@ export class ConfigApi {
   }
 
   /** Returns a specific configuration section by its dot-path element key. */
-  async getSection(element: string, options?: ConfigQueryOptions): Promise<GenericApiResponse> {
-    return this.core.requestJson<GenericApiResponse>(`config/${element.replace(/^\/+/, '')}`, { query: options });
+  async getSection(element: string, options?: ConfigQueryOptions): Promise<ConfigResponse> {
+    return this.core.requestJson<ConfigResponse>(`config/${element.replace(/^\/+/, '')}`, { query: options });
   }
 
   /** Appends a value to an array-type configuration entry. */

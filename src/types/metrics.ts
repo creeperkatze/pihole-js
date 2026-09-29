@@ -1,4 +1,6 @@
-import type { ApiResponseBase, JsonValue } from './base.js';
+import type { ApiResponseBase } from './base.js';
+import type { SystemInfo, VersionInfo } from './info.js';
+import type { ByteCount } from './system.js';
 
 /** A single data point in the query history time series. */
 export interface HistoryPoint {
@@ -170,16 +172,59 @@ export interface QuerySuggestionsResponse extends ApiResponseBase {
   suggestions: Record<string, string[]>;
 }
 
-/** Summary metrics for the PADD dashboard. */
+/** Network interface summary shown by PADD. */
+export interface PaddInterface {
+  addr: string | null;
+  num_addrs: number;
+  name: string;
+  gw_addr: string | null;
+}
+
+/** Summary used by PADD. Most fields are only included when requesting full data. */
 export interface PaddResponse extends ApiResponseBase {
+  recent_blocked?: string | null;
+  top_domain?: string | null;
+  top_blocked?: string | null;
+  top_client?: string | null;
+  active_clients?: number;
+  gravity_size?: number;
+  blocking?: string;
+  queries?: {
+    total: number;
+    blocked: number;
+    percent_blocked: number;
+  };
+  cache?: {
+    size: number;
+    inserted: number;
+    evicted: number;
+  };
+  iface?: {
+    v4: PaddInterface & { rx_bytes: ByteCount; tx_bytes: ByteCount };
+    v6: PaddInterface;
+  };
+  node_name?: string;
+  host_model?: string | null;
+  config?: {
+    dhcp_active: boolean;
+    dhcp_start: string;
+    dhcp_end: string;
+    dhcp_ipv6: boolean;
+    dns_domain: string;
+    dns_port: number;
+    dns_num_upstreams: number;
+    dns_dnssec: boolean;
+    dns_revServer_active: boolean;
+    privacy_level: number;
+  };
   '%cpu'?: number;
   '%mem'?: number;
+  pid?: number;
   sensors?: {
     cpu_temp: number | null;
+    hot_limit: number;
     unit: string;
   };
-  system?: {
-    uptime: number;
-  };
-  [key: string]: JsonValue | undefined;
+  system?: SystemInfo;
+  version?: VersionInfo;
 }
