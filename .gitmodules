@@ -1,3 +1,0 @@
-[submodule "website/.vitepress/shared"]
-	path = website/.vitepress/shared
-	url = https://github.com/creeperkatze/vitepress-theme.git
