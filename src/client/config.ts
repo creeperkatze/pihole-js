@@ -1,6 +1,7 @@
 import { PiHoleClientCore } from './core.js';
 import type {
   ConfigMutationOptions,
+  ConfigPropertiesResponse,
   ConfigQueryOptions,
   ConfigResponse,
 } from '../types/index.js';
@@ -22,6 +23,11 @@ export class ConfigApi {
       query: options,
       body: { config },
     });
+  }
+
+  /** Returns special configuration properties, such as which keys are read-only. */
+  async getProperties(): Promise<ConfigPropertiesResponse> {
+    return this.core.requestJson<ConfigPropertiesResponse>('config/_properties');
   }
 
   /** Returns a specific configuration section by its dot-path element key. */

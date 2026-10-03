@@ -32,6 +32,23 @@ export interface ConfigResponse extends ApiResponseBase {
   config: JsonObject;
 }
 
+/** A configuration property that cannot be changed via the API. */
+export interface ConfigReadOnlyProperty {
+  /** Dot-path key of the property, e.g. `misc.readOnly`. */
+  key: string;
+  /** Machine-readable reason, e.g. `read_only` or `env_var`. */
+  reason: string;
+  /** Human-readable description of the reason. */
+  description: string;
+}
+
+/** Special properties of the Pi-hole configuration. */
+export interface ConfigPropertiesResponse extends ApiResponseBase {
+  config: {
+    read_only: ConfigReadOnlyProperty[];
+  };
+}
+
 /** Address family of a route or interface address. */
 export type AddressFamily = 'inet' | 'inet6' | 'link' | 'mpls' | 'bridge' | '???';
 

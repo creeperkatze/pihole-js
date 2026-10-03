@@ -124,8 +124,10 @@ export interface EntryCount {
 /** Details about the FTL process and its database. */
 export interface FtlInfo {
   database: {
-    /** Number of exact domains on all lists. */
+    /** Number of exact domains on blocking lists. */
     gravity: number;
+    /** Number of exact domains on allowing lists. */
+    antigravity: number;
     groups: number;
     lists: number;
     clients: number;

@@ -193,6 +193,8 @@ export interface PaddResponse extends ApiResponseBase {
     total: number;
     blocked: number;
     percent_blocked: number;
+    /** Average number of queries per second. */
+    query_frequency: number;
   };
   cache?: {
     size: number;
